@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" class="page-fill">
+	<head>
+		<meta charset="UTF-8">
+		<title>测试 Selector_simple</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+		<link rel="stylesheet" href="../../css/iconfont/iconfont.css">
+		<link rel="stylesheet" href="../../lib/layui/css/layui.css">
+		<link rel="stylesheet" href="../../css/global.css">
+		<link rel="stylesheet" href="selector_simple.css">
+	</head>
+	<body class="body-set1">
+		<div class="selector_simple"></div>
+		<script src="../../lib/jquery/jquery-3.3.1.min.js"></script>
+		<script src="../../js/common.js"></script>
+		<script src="../../js/global.js"></script>
+		<script src="selector.js"></script>
+		<script src="selector_simple.js"></script>
+		<script>	
+			// console.log('selector_simple_result:', selector_simple_data);
+			var selector_simple_data = {
+				isMultiSelect: true,
+				datatype: 'sales',
+				brand: [{key:4,value:'AUDI'},{key:6,value:'BMW'}],
+				body: [{key:3,value:'SUV'},{key:300,value:'PC'}],
+				segment: [{key:8,value:'SUV COMPACT',checked:true},{key:9,value:'SUV SMALL',checked:true},{key:10,value:'SUV MEDIUM',checked:true},{key:11,value:'SUV LARGE',checked:true},{key:301,value:'PC LARGE',checked:true},{key:302,value:'PC LAS',checked:false}],
+				fuel: [{key:1,value:'ICE'}],
+				// model: [{key:1,value:'model xxxx'},{key:2,value:'model yyyy'}],
+				// type: [{key:1,value:'type xxxx'},{key:2,value:'type yyyy'}],
+				// vsn: [{key:1,value:'vsn xxxx'},{key:2,value:'vsn yyyy'}],
+			};
+			console.log('selector_simple_result:', getSelectorApiParams(selector_simple_data));
+			console.log('selector_simple_result:', getSelectorBtnTxt(selector_simple_data));
+		</script>
+	</body>
+</html>

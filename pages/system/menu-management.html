@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>菜单管理</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="../../css/iconfont/iconfont.css?v=2.6.1">
+	<link rel="stylesheet" href="../../css/oksub.css?v=2.6.1">
+	<script type="text/javascript" src="../../lib/loading/okLoading.js?v=2.6.1"></script>
+	<script src="../../lib/jquery-1.12.4.min.js?v=2.6.1"></script> 
+</head>
+<body>
+<div class="ok-body">
+	<!--模糊搜索区域-->
+	<!-- <div class="layui-row">
+		<form class="layui-form layui-col-md12 ok-search">
+			<input class="layui-input" placeholder="菜单名称" autocomplete="off" name="MENU_NAME">
+			<button class="layui-btn" lay-submit="" lay-filter="search">
+				<i class="layui-icon layui-icon-search"></i>
+			</button>
+		</form>
+	</div> -->
+	<!--数据表格-->
+	<div class="layui-row layui-col-space15">
+		<div class="layui-col-md2">
+			<div id="menuTree" class="layui-card" style="margin-top: 10px; border: 1px solid #E6E6E6;"></div>
+		</div>
+		<div class="layui-col-md10">
+			<table class="layui-hide" id="menuTable" lay-filter="tableFilter"></table>
+		</div>
+	</div>
+</div>
+<!--js逻辑-->
+<script src="../../lib/layui/layui.js?v=2.6.1"></script>
+<script src="../../js/common.js?v=2.6.1"></script>
+<script src="../../js/i18n/jquery.i18n.properties.js?v=2.6.1"></script>
+<script src="../../js/i18n/i18np.js?v=2.6.1"></script>
+<script>
+	g_initlang('../../'); //更新语言版本
+	
+	layui.use(["element", "jquery", "table", "tree", "form", "laydate", "okLayer", "okUtils", "okMock", "okLayx","i18np"], function () {
+		let table = layui.table;
+		let tree = layui.tree;
+		let form = layui.form;
+		let i18np = layui.i18np;
+		let laydate = layui.laydate;
+		let okLayer = layui.okLayer;
+		let okUtils = layui.okUtils;
+		let okMock = layui.okMock;
+	    let okLayx = layui.okLayx;
+        let $ = layui.jquery;
+		i18np.loadProperties();
+		okLoading.close($);
+		
+		var menudata = [{
+			"id": 0,
+			"title": "根目录",
+			"spread": true,
+			"children": []
+		}];
+		var menudetaildata = [];
+		var menudetaildata_where = [];
+		
+		function addMenuTreeData(mdata) {
+			menudetaildata.forEach(function(item, index){
+				if (mdata.id == item.P_MENU_ID) {
+					var subitem = {
+						"id": item.MENU_ID,
+						"title": item.MENU_TITLE,
+						"spread": item.MENU_SPREAD,
+						"children": []
+					}
+					addMenuTreeData(subitem);
+					mdata.children.push(subitem);
+				}
+			});
+		}
+		
+		function addMenuDetailData(mdata) {
+			menudetaildata.forEach(function(item, index){
+				if (mdata.MENU_ID == item.P_MENU_ID) {
+					menudetaildata_where.push(item);
+					addMenuDetailData(item);
+				}
+			});
+		}
+		
+		okUtils.ajax(g_req_url + "RoleMenuAuth/GetMenus", "get", {}, true, false).done(function (response) {
+			console.log(response);
+			if (response.data.length > 0) {
+				menudetaildata = response.data;
+				addMenuTreeData(menudata[0]);
+				tree.render({
+					elem: "#menuTree",
+					id: "menuTree",
+					data: menudata,
+					headers,
+					accordion: true,
+					showLine: false,
+					// showCheckbox: true
+					click: function(obj){
+					    // console.log(obj);
+						if (obj.data.id == 0) {
+							menuTable.reload({ data: menudetaildata });
+							return;
+						}
+						menudetaildata_where = [];
+						menudetaildata.forEach(function(item, index){
+							// console.log(item.MENU_ID);
+							if (obj.data.id == item.MENU_ID) {
+								menudetaildata_where.push(item);
+								addMenuDetailData(menudetaildata_where[0]);
+								console.log(menudetaildata_where);
+								menuTable.reload({ data: menudetaildata_where });
+							}
+						});
+					}
+				});
+			}
+		}).fail(function (error) {
+		   console.log(error)
+		});
+		//Print_Log("Menu Management","查询","查询菜单信息");
+		// console.log(menudetaildata)
+		let menuTable = table.render({
+			elem: "#menuTable",
+			id: "menuTable",
+			title:"Menu Management",
+			// url: g_req_url +"RoleMenuAuth/GetMenus",
+			data: menudetaildata,
+			size: "sm",
+			page: false,
+			limits: [], 
+			limit: 10000,
+            toolbar: true, toolbar: "#toolbarTpl",
+			skin: 'row', even: true, //表格风格 隔行背景
+			request: { //用于实现后台分页
+			    pageName: 'pageIndex' //页码的参数名称，默认：page
+			    ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+			},
+			height: 'full-40',
+			cols: [[
+				// {type: "checkbox", fixed: "left"},
+				{field: "MENU_ID", title: "ID", sort: true, width: 60, fixed: "left"},
+				{field: "MENU_ICON", title: "图标", width: 80, align: "center", templet: "#menuImage", fixed: "left"},
+				{field: "MENU_TITLE", title: "菜单标题", sort: true, width: 150, fixed: "left"},
+				{field: "P_MENU_TITLE", title: "父级菜单", sort: true},
+				{field: "MENU_HREF", title: "地址", sort: true},
+				{field: "MENU_FONTFAMILY", title: "样式", sort: true},
+				{field: "MENU_ORD", title: "顺序", sort: true},
+				{field: "MENU_SPREAD", title: "是否展开", sort: true, hide: true},
+				{field: "MENU_ISCHECK", title: "是否选中", sort: true, hide: true},
+				{field: "P_MENU_ID", title: "父级菜单ID", sort: true, hide: true},
+				{field: "CREATE_TIME", title: "创建时间", sort: true, width: 150},
+				{field: "MENU_STATE", title: "状态", width: 80, align: "center", templet: "#statusTpl"},
+				{title: "操作", width: 80, align: "center", fixed: "right", templet: "#operationTpl"}
+			]],
+			done: function (res, curr, count) {
+				// console.log(res, curr, count);
+			}
+		});
+		
+		$('#menuTree').height($('.layui-col-md10').height() - 22);		
+		window.onresize = function(){
+			$('#menuTree').height($('.layui-col-md10').height() - 22);
+			// console.log($('#menuTree').height());
+		};
+		
+		// form.on("submit(search)", function (data) {
+		// 	//获取当前数据表格条数
+		// 	data.field.pageSize = $(".layui-laypage-limits").find("option:selected").val();
+		// 	// console.log(data.field);
+		// 	menuTable.reload({
+		// 		url: g_req_url +"RoleMenuAuth/GetMenus",
+		// 		method: 'get',
+		// 		page: { curr: 1 },
+		// 		where: data.field
+		// 	});
+		// 	return false;
+		// });
+
+		table.on("toolbar(tableFilter)", function (obj) {
+			switch (obj.event) {
+				case "add":
+					add();
+					break;
+				case "LAYTABLE_PRINT":
+					Print_Log("Menu Management","打印","打印菜单信息");
+					break;
+			}
+		});
+
+		table.on("tool(tableFilter)", function (obj) {
+			let data = obj.data;
+			switch (obj.event) {
+				case "edit":
+					edit(data);
+					break;
+				case "del":
+					del(data.MENU_ID);
+					break;
+			}
+		});
+
+		function add() {
+			okLayer.open("添加菜单", "menu-insert.html", "35%", "80%", null, function () {
+				Print_Log("Menu Management","添加","添加菜单信息");
+				if (haveRefresh) {
+					window.location.reload();
+					haveRefresh = false;
+				}
+			})
+		}
+
+		function edit(data) {
+			okLayer.open("编辑菜单", "menu-insert.html", "35%", "80%", function (layero) {
+                let iframeWin = window[layero.find("iframe")[0]["name"]];
+                iframeWin.initForm(data);
+				Print_Log("Role Authority","编辑","编辑菜单信息");
+			}, function () {
+                if (haveRefresh) {
+					window.location.reload();
+					haveRefresh = false;
+				}
+            })
+		}
+
+		function del(id) {
+			okLayer.confirm("确定要删除吗？", function () {
+				okUtils.ajax(g_req_url + "RoleMenuAuth/DeleteMenu", "post", JSON.stringify({ menuid: id }), true, true).done(function (response) {
+					// console.log(response);
+					Print_Log("Role Authority","删除","删除菜单信息");
+					menuMsg(response, "删除");
+					layer.close(layer.index); 		
+			    	$(".layui-laypage-btn").click(); //刷新
+				}).fail(function (error) {
+					console.log(error)
+				});
+			})
+		}
+	})
+</script>
+<!-- 头工具栏模板 -->
+<script type="text/html" id="toolbarTpl">
+	<div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add">添加菜单</button>
+	</div>
+</script>
+<!-- 行工具栏模板 -->
+<script type="text/html" id="menuImage">
+	{{#  if(d.MENU_ICON.indexOf('&#') >= 0){ }}
+	<i class="{{d.MENU_FONTFAMILY}}">{{d.MENU_ICON}}</i>
+	{{#  } else { }}
+	<i class="{{d.MENU_FONTFAMILY}} {{d.MENU_ICON}}"></i>
+	{{#  } }}
+</script>
+<script type="text/html" id="statusTpl">
+	{{#  if(d.MENU_STATE == 1){ }}
+	<span class="layui-btn layui-btn-normal layui-btn-xs" onclick="changeState(this)">启用</span>
+	{{#  } else if(d.MENU_STATE == 0) { }}
+	<span class="layui-btn layui-btn-warm layui-btn-xs" onclick="changeState(this)">停用</span>
+	{{#  } }}
+</script>
+<script type="text/html" id="operationTpl">
+	<a href="javascript:" title="编辑" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
+	<a href="javascript:" title="删除" lay-event="del"><i class="layui-icon">&#xe640;</i></a>
+</script>
+</body>
+</html>
+<script type="text/javascript">
+	//放到此处是为了方便子页面调用
+	var haveRefresh = false;
+	function menuMsg(response, reqtype) {
+	    layui.use(["okLayx"], function () {
+			let okLayx = layui.okLayx;
+			okLayx.notice({
+			    // title: (response.data == "success" ? "成功" : "错误") + "提示",
+			    type: response.data,
+			    message: reqtype + (response.data == "success" ? "成功" : "失败") + "！" + (response.msg == "" ? "" : "\n原因：" + response.msg)
+			});
+	    });
+	}
+	function changeState(obj) {
+		// alert('aa');
+	}
+</script>

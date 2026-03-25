@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<link rel="stylesheet" href="../layui/css/layui.css?v=2.6.1">
+		<title>连线DEMO</title>
+		<style>
+			#diagramContainer {
+				padding: 20px;
+				width: 60%;
+				height: 300px;
+				border: 1px solid gray;
+			}
+
+			.item {
+				position: absolute;
+				height: 40px;
+				width: 100px;
+				border: 1px solid #0055ff;
+				float: left;
+				background-color: #4f81bd;
+			}
+
+			lable {
+				vertical-align: -webkit-baseline-middle;
+				position: relative;
+				margin-left: 45%;
+				top: 16%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="diagramContainer"></div>
+		<script src="jquery.js"></script>
+		<script src="jquery-ui.js"></script>
+		<script src="jquery.jsplumb.js"></script>
+		<script src="../layui-v2.6.8/layui/layui.js?v=2.6.1"></script>
+		<script>
+			var div_arr = [
+				['A', 'B', 'C', 'D'],
+				['E', 'F', 'G', 'H'],
+				['I', 'J', 'K', 'L']
+			]
+			//删除所有连接
+			function DeleteOnline() {
+					plumb_arr = [];
+					jsPlumb.detachEveryConnection()
+			}
+			var plumb_arr = [];
+			jsPlumb.ready(function() {
+				jsPlumb.setContainer('diagramContainer') //默认可以节点可以拖到区域外，设置Container固定只能在当前区域移动
+				var dynamicAnchors = [
+					[1, 0.2, 1, 0, 0, 13],
+					[1, 0.2, 5, 0],
+					[0, 0.8, -1, 0, 0, -13],
+					[0, 0.8, -1, 0] //动态描点
+				]
+				var common = {
+					isSource: true,
+					isTarget: true,
+					connector: ['Straight'],
+					endpoint: "Blank",
+				}
+				var html = '';
+				var left = 80;
+				var top_offset = 47;
+				var left_offset = 200;
+				for (let a = 0; a < div_arr.length; a++) {
+					var top = 50;
+					for (let b = 0; b < div_arr[a].length; b++) {
+						html += '<div id=' + div_arr[a][b] + ' class="item" style="top:' + top + 'px;left:' + left +
+							'px"><lable>' + div_arr[a][b] + '</lable></div>'
+						top += top_offset;
+					}
+					left += left_offset;
+				}
+				$("#diagramContainer").html(html)
+				$("#diagramContainer").append(`<button type='button' class='layui-btn layui-btn-primary' 
+					style='position: relative;left: 50%;top: 80%;' onclick='DeleteOnline()'>删除所有连接</button>`)
+				for (let a = 0; a < div_arr.length; a++) {
+					for (let b = 0; b < div_arr[a].length; b++) {
+						if (div_arr.length > 2) {
+							if (a % 2 == 0) {
+								jsPlumb.makeTarget(div_arr[a][b], {
+									anchor: a == 2 ? 'Left' : 'Right'
+								}, common)
+							} else {
+								jsPlumb.makeSource(div_arr[a][b], {
+									anchor: dynamicAnchors
+								}, common)
+							}
+						} else {
+							if (a % 2 == 0) {
+								jsPlumb.makeSource(div_arr[a][b], {
+									anchor: 'Right'
+								}, common)
+							} else {
+								jsPlumb.makeTarget(div_arr[a][b], {
+									anchor: 'Left'
+								}, common)
+							}
+						}
+					}
+				}
+
+				function JsplumbConn(conn) {
+					jsPlumb.detach(conn)
+					for (let i = 0; i < plumb_arr.length; i++) {
+						if (plumb_arr[i] == conn.sourceId + conn.targetId) {
+							plumb_arr.splice(i, 1)
+						}
+					}
+				}
+				// 双击删除连接线
+				jsPlumb.bind('dblclick', (conn) => {
+					JsplumbConn(conn)
+				})
+				// 单击删除连接线
+				jsPlumb.bind('click', (conn) => {
+					JsplumbConn(conn)
+				})
+				// 当连接建立前
+				jsPlumb.bind('beforeDrop', function(info) {
+					plumb_arr.push(info.sourceId + info.targetId);
+					var p_str = plumb_arr.join(",") + ",";
+					console.log(info)
+					console.log(plumb_arr.join(','))
+					if (plumb_arr.length != 1) {
+						for (let i = 0; i < plumb_arr.length; i++) {
+							if (p_str.replace(plumb_arr[i] + ",", "").indexOf(plumb_arr[i] + ",") > -1) {
+								plumb_arr.splice(i, 1)
+								console.log(plumb_arr.join(','))
+								console.log(' 连接失败')
+								return false
+							}
+						}
+					}
+					console.log(' 连接成功')
+					return true
+				})
+			})
+		</script>
+	</body>
+
+</html>

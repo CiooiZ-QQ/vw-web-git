@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>系统设置</title>
+    <!--<link rel="stylesheet" href="../../css/oksub.css?v=2.6.1">-->
+    <link rel="stylesheet" href="../../css/okadmin.css?v=2.6.1">
+    <link rel="stylesheet" href="../../css/admin.css?v=2.6.1">
+    <script type="text/javascript" src="../../lib/jquery-1.12.4.min.js?v=2.6.1"></script>
+    <script type="text/javascript" src="../../js/okconfig.js?v=2.6.1"></script>
+    <style type="text/css">
+
+        .ok-setting .layui-form-item {
+            margin: 0;
+        }
+
+        .ok-setting .set-label {
+            padding-left: 0;
+            width: 80px;
+            text-align: right;
+            font-size: 16px;
+            padding-right: 10px;
+        }
+
+        .ok-setting .layui-input-block {
+            margin: 0;
+        }
+
+        .layui-layer-title2 {
+            margin-top: 20px;
+            width: 100%;
+            padding: 0 80px 0 20px;
+            height: 42px;
+            line-height: 42px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            color: #333;
+            overflow: hidden;
+            background-color: #F8F8F8;
+            border-radius: 2px 2px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="layui-card-body ok-setting">
+        <form class="layui-form" action="javascript:;">
+            <div class="layui-form-item">
+                <label class="layui-form-label set-label">导航箭头：</label>
+                <div class="layui-input-block">
+                    <input lay-filter="arrow" type="radio" name="arrow" value="" title="默认">
+                    <input lay-filter="arrow" type="radio" name="arrow" value="ok-arrow2" title="箭头">
+                    <input lay-filter="arrow" type="radio" name="arrow" value="ok-arrow3" title="加号">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label set-label">切换刷新：</label>
+                <div class="layui-input-block">
+                    <input lay-filter="refresh" type="checkbox" name="refresh" lay-skin="switch" lay-text="开启|关闭">
+                    <!--<input lay-filter="arrow" type="checkbox" name="sex" value="" title="默认">-->
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label set-label">tab记忆：</label>
+                <div class="layui-input-block">
+                    <input lay-filter="menu" type="checkbox" name="menu" lay-skin="switch" lay-text="开启|关闭">
+                    <!--<input lay-filter="arrow" type="checkbox" name="sex" value="" title="默认">-->
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--------------------------------------------------模板样式---------------------------------------------------->
+    <div class="layui-layer-title2 ">配色方案 </div>
+    <div id="templateStyle">
+        <!--模板-->
+        <!--<div class="layui-card-body layadmin-setTheme">
+            <ul class="layadmin-setTheme-color">
+                <li layadmin-event="setTheme" data-index="1">
+                    <div class="layadmin-setTheme-header" style="background-color:#393D49;"></div>
+                    <div class="layadmin-setTheme-side" style="background-color: #03152A;">
+                        <div class="layadmin-setTheme-logo" style="background-color:#1E9FFF"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>-->
+    </div>
+</body>
+</html>
+
+
+<script>
+    //-------templateSty格式--------
+    //"top": "#ffffff",//头部颜色
+    //"left": "#20222A",//左列颜色
+    //"selected": "#009688", //选中色
+    //"logo": "", //左上角
+    //"alias": "default", //title默认别名
+    //"styclass": "selSty1"//设值class
+    var styles = //内置主题配色方案
+        $(function () {
+            //关闭异步
+            $.ajaxSettings.async = false;
+            //获取模板json
+            $.getJSON("../../data/templateSty.json", function (data) {
+                styles = data;
+				console.log('测试返回值',styles)
+            })
+            //加载模板样式
+            var templateStyle = $("#templateStyle");
+            var str = "<div class=\"layui-card-body layadmin-setTheme\">";
+            str += "<ul class=\"layadmin-setTheme-color\">";
+            $.each(styles, function (idx, val) {
+                str += "<li layadmin-event=\"setTheme\" onclick=\"selects(this)\" style=\"border: 4px solid #f2f2f2; background-color: #eee\" data-index=\"" + idx + "\" title=\"" + val.alias + "\">";
+                str += "<div class=\"layadmin-setTheme-header\" style=\"background-color:" + val.top + ";\"></div>";
+                str += "<div class=\"layadmin-setTheme-side\" style=\"background-color:" + val.left + ";\">";
+                str += "<div class=\"layadmin-setTheme-logo\" style=\"background-color:" + val.logo + "\"></div>";
+                str += "</div>";
+                str += "</li>";
+            })
+            str += "</ul>";
+            str += "</div >";
+            templateStyle.append(str);
+            //设置上次选中模板
+            var index= localStorage.getItem("xt-template");
+            $("ul li:eq(" + index + ")").css("border", "4px solid #5FB878");
+        })
+    function selects(obj) {
+        layui.use(['okUtils'], function () {
+            let okUtils = layui.okUtils;
+            //获取当前选着的第li标签
+            var index = $("ul li").index(obj);
+            // 父级dom
+            parentBody = parent.document.body;
+            //移除所有class拼接
+            var classStr;
+            //当前选中的class
+            var selclass;
+            var config = okUtils.local("okConfig") || okConfig || {};
+            //设置点击li设置选中边框
+            $.each($("[layadmin-event='setTheme']"), function (idx, val) {
+                $(val).css("border-color", "#f2f2f2");
+            })
+            $(obj).css("border", "4px solid #5FB878");
+
+            //循环设置颜色
+            $.each(styles, function (idx, val) {
+                if (idx == parseInt(index)) {
+                    //左边区域
+                    parent.$("#LeftRegion").css("background", val.left);
+                    //头部区域
+                    parent.$("#TopRegion").css("background", val.top);
+                    //左上角
+                    parent.$("#EditionRegion").css("background", val.logo);
+                    selclass = val.styclass;
+                    //存储缓存
+				
+                    localStorage.setItem("left-template", "" + val.left + "");
+                    localStorage.setItem("top-template", "" + val.top + "");
+                    localStorage.setItem("logo-template", "" + val.logo + "");
+                }
+                classStr += val.styclass + " "
+
+            });
+
+            //设置选中区域颜色
+            $(parentBody).find(".layui-layout-admin").removeClass(classStr);
+            $(parentBody).find(".layui-layout-admin").addClass(selclass);
+            config.theme = selclass;
+            okUtils.local("okConfig", config);
+            //缓存储存索引
+            localStorage.setItem("xt-template", "" + index + "");
+
+   
+        });
+    }
+</script>
+
+
+<script type="text/javascript" src="../../lib/layui/layui.js?v=2.6.1"></script>
+<script type="text/javascript">
+    layui.use(['jquery', 'form', 'okUtils'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            okUtils = layui.okUtils,
+            parentBody = parent.document.body;// 父级dom
+        var config = okUtils.local("okConfig") || okConfig || {};
+        var ok_arrow = "ok-arrow2 ok-arrow3";
+
+        $("input[name=theme]").each(function (i, item) {
+            if (config.theme == $(item).val()) {
+                $(item).prop("checked", true);
+            } else {
+                $(item).prop("checked", false);
+            }
+        });
+        $("input[name=arrow]").each(function (i, item) {
+            if (config.menuArrow == $(item).val()) {
+                $(item).prop("checked", true);
+            } else {
+                $(item).prop("checked", false);
+            }
+        });
+        $("input[name=refresh]").prop("checked", config.isTabRefresh);
+        $("input[name=menu]").prop("checked", config.isTabMenu);
+
+        form.render();
+        form.on('radio(arrow)', function (data) { //更改导航箭头样式
+            $(parentBody).find("#navBar").removeClass(ok_arrow);
+            $(parentBody).find("#navBar").addClass(data.value);
+            config.menuArrow = data.value;
+            okUtils.local("okConfig", config);
+        });
+
+        form.on('switch(refresh)', function (data) { //切换刷新
+            config.isTabRefresh = data.elem.checked;
+            okUtils.local("okConfig", config);
+        });
+
+        form.on('switch(menu)', function (data) { //tab记忆
+            config.isTabMenu = data.elem.checked;
+            okUtils.local("okConfig", config);
+        });
+    });
+</script>

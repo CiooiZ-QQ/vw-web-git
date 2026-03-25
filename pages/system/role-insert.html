@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>添加角色</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../css/oksub.css?v=2.6.1">
+		<style>
+			.location {
+				position: fixed;
+				right: 20px;
+				bottom: 2px;
+			}
+		</style>
+		<script type="text/javascript" src="../../lib/loading/okLoading.js?v=2.6.1"></script>
+			<script src="../../lib/jquery/jquery-3.3.1.min.js?v=2.6.1" type="text/javascript"></script>
+	</head>
+	<body>
+		<div class="ok-body">
+			<!--form表单-->
+			<form class="layui-form layui-form-pane ok-form" lay-filter="filter">
+				<div class="layui-form-item">
+					<label class="layui-form-label" data-i18n-text="rolename">角色名</label>
+					<div class="layui-input-block">
+						<input type="text" id="ROLE_NAME" name="ROLE_NAME" data-i18n-placeholder="pearolename" placeholder="请输入角色名称" autocomplete="off" class="layui-input" lay-verify="required|ROLE_NAME">
+						<input type="hidden" name="ROLE_ID" />
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label" data-i18n-text="remarks">角色备注</label>
+					<div class="layui-input-block">
+						<input type="text" name="ROLE_REMARK" placeholder="请输入角色备注" data-i18n-placeholder="pearemarks" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label" data-i18n-text="state">角色状态</label>
+					<div class="layui-input-block">
+						<input type="checkbox" name="ROLE_STATE" lay-filter="form-switch" lay-skin="switch" lay-text="启用|停用" checked>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"  data-i18n-text="state">角色权限</label>
+					<div class="layui-input-block">
+						<div id="authTree"></div>
+					</div>
+				</div>
+				<div class="layui-form-item location">
+					<div class="layui-input-block">
+						<button class="layui-btn" lay-submit lay-filter="add" data-i18n-text="submit">立即提交</button>
+						<button type="reset" class="layui-btn layui-btn-primary"  data-i18n-text="reset">重置</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!--js逻辑-->
+		<script src="../../lib/layui/layui.js?v=2.6.1"></script>
+		<script src="../../js/common.js?v=2.6.1"></script>
+		<script src="../../js/i18n/jquery.i18n.properties.js?v=2.6.1"></script>
+		<script src="../../js/i18n/i18np.js?v=2.6.1"></script>
+		<script type="text/javascript">
+			let initDatas;
+			var menudata = [{
+				"id": 0,
+				"title": "根目录",
+				"spread": true,
+				"children": []
+			}];
+			//勾选已有菜单权限项
+			function doTreeNodeCheck(mdata, authdata) {
+				mdata.forEach(function(item, index){
+					if (item.children == null || item.children.length == 0) {
+						if (authdata.contains(item.id)) item.checked = true;
+					} else doTreeNodeCheck(item.children, authdata);
+				});
+			};
+			
+			
+			function initForm(data) {
+				// console.log(data);
+				initDatas = JSON.parse(JSON.stringify(data));
+				document.getElementById("ROLE_NAME").disabled = true;
+				$('#ROLE_NAME').val(data.ROLE_NAME);
+				$('[name="ROLE_REMARK"]').val(data.ROLE_REMARK);
+				//zzy
+				layui.use(["form", "tree", "okLayer", "okUtils","i18np"], function () {
+					var $ = layui.jquery;
+					let form = layui.form;
+					let i18np = layui.i18np;
+					let tree = layui.tree;
+					let okLayer = layui.okLayer;
+					let okUtils = layui.okUtils;
+					okUtils.ajax(g_req_url + "RoleMenuAuth/GetAuthByRoleID", "get", { roleid: data.ROLE_ID}, true, true).done(function (response) {
+						// console.log(response);
+						var authdata = response.data;
+						if (authdata.length > 0) {
+							// tree.setChecked('authTree', authdata); //勾选指定节点 原有方法有问题，当父级菜单勾选时，所有子菜单都会勾选
+							doTreeNodeCheck(menudata, authdata);
+							// console.log(menudata);
+							tree.reload('authTree', {}); //重载Tree
+						}
+					}).fail(function (error) {
+					   console.log(error)
+					});
+					
+				});
+				
+				//zzy-end
+				
+			};
+			
+			layui.use(["form", "tree", "okLayer", "okUtils","i18np"], function () {
+				var $ = layui.jquery;
+				let form = layui.form;
+				let i18np = layui.i18np;
+				let tree = layui.tree;
+				let okLayer = layui.okLayer;
+				let okUtils = layui.okUtils;
+				i18np.loadProperties();
+				okLoading.close();
+				if (typeof(initDatas) != "undefined") form.val("filter", initDatas);
+				
+				//数据校验
+				form.verify({
+					ROLE_NAME: function (value, item) {
+						// console.log(value, item);
+						if (value.length < 3 || value.length > 20) return "角色名称的长度必须为3-20位！";
+						let result = "";
+						if (typeof(initDatas) == "undefined") {
+							okUtils.ajax(g_req_url +"RoleMenuAuth/CheckRoleName", "get", { rolename: value }, true, false).done(function (response) {
+								if (response.data == "success") result = "该角色名称已存在，请重新输入";
+							});
+							if (result != "") return result;
+						}
+					}
+				});
+				
+				if (okUtils.local(g_accr_auth_menus)) menudata[0].children = okUtils.local(g_accr_auth_menus);
+				if (menudata[0].children != null) {
+					// menudata[0].children[0].disabled = true;
+					menudata[0].children[0].checked = true; //主页必选
+				} 
+				// console.log(menudata);
+				tree.render({
+					elem: "#authTree",
+					id: "authTree",
+					data: menudata,
+					// showLine: false,
+					showCheckbox: true
+				});
+				
+				//编辑时需要获取并勾选角色已有菜单权限信息
+				if (typeof(initDatas) != "undefined") {	
+					console.log(initDatas.ROLE_ID)	
+					okUtils.ajax(g_req_url + "RoleMenuAuth/GetAuthByRoleID", "get", { roleid: initDatas.ROLE_ID}, true, true).done(function (response) {
+						// console.log(response);
+						var authdata = response.data;
+						if (authdata.length > 0) {
+							// tree.setChecked('authTree', authdata); //勾选指定节点 原有方法有问题，当父级菜单勾选时，所有子菜单都会勾选
+							doTreeNodeCheck(menudata, authdata);
+							// console.log(menudata);
+							tree.reload('authTree', {}); //重载Tree
+						}
+					}).fail(function (error) {
+					   console.log(error)
+					});
+				};
+			
+				
+				//提交添加或编辑
+				form.on("submit(add)", function (data) {
+					// data.field.USID = "3dc6c76b-e6be-4404-9107-bde51e071e42";
+					data.field.USID = localStorage.getItem(g_accr_auth_usid);
+					if (data.field.USID == null || data.field.USID.length == 0) {
+						layer.msg("无法获取用户信息，请重新登录！", {icon: 5});
+						return false;
+					}
+					var checkedData = tree.getChecked('authTree'); //获取选中节点的数据
+					data.field.AUTHS = getCheckedMenuIds(checkedData, []);;
+					if (data.field.AUTHS == null || data.field.AUTHS.length == 0) {
+						layer.msg("请选择角色权限信息！", {icon: 5});
+						return false;
+					}
+					// if (!data.field.AUTHS.contains(1)) {
+					// 	layer.msg("角色权限主页是必选项！", {icon: 5});
+					// 	return false;
+					// }
+					data.field.ROLE_STATE = data.field.ROLE_STATE ? 1 : 0;
+					// console.log(JSON.stringify(data.field));
+					okUtils.ajax(g_req_url + "RoleMenuAuth/" + (typeof(initDatas) == "undefined" ? "InsertRole" : "UpdateRole"), "post", JSON.stringify(data.field), true, true).done(function (response) {
+						 
+						if (response.data == "success") {
+							Print_Log("Role Authority","提交","提交编辑角色信息");
+							parent.layer.close(parent.layer.getFrameIndex(window.name));
+						    parent.roleMsg(response, (typeof(initDatas) == "undefined" ? "添加" : "编辑"));
+							parent.haveRefresh = true;
+						} else if (response.msg != "") {
+							layer.msg(response.msg, {icon: 5});
+						}				
+					}).fail(function (error) {
+					   console.log(error)
+					});
+					return false;
+				});
+				
+				//获取权限菜单树形已选项id集合
+				function getCheckedMenuIds(treedata, auths) {
+					treedata.forEach(function(item, index){
+						if (item.id != undefined && item.id > 0) auths.push(item.id);
+						if (item.children != null && item.children.length > 0) auths = getCheckedMenuIds(item.children, auths);
+					});
+					return auths;
+				};
+			
+				//展开或者折叠角色权限菜单树形结构
+				function changeTreeNodeSpreadState(state) {
+					mdata.forEach(function(item, index){
+						item.spread = state;
+						if (item.children != null && item.children.length > 0) changeTreeNodeSpreadState(state);
+					});
+				};
+			})
+		</script>
+	</body>
+</html>

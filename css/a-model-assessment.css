@@ -1,0 +1,84 @@
+
+#select-year { margin-right: 5px; z-index: 2; }
+#select-year span { position: relative; display: inline-block; margin-bottom: 1vh; padding: 0 15px; height: 4vh; line-height: 2; min-height: 36px; font-size: 1.1rem; margin-right: 6px; cursor: pointer; }
+#select-year span::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: -1; transform: skewX(-25deg); background-color: #1C273B; border: 1px solid #50595E; }
+#select-year span:hover::before { border: 1px solid #666666; box-shadow: 0 0 12px 0 rgba(200,200,200,0.6); }
+#select-year span[class='active']::before { background-color: #1E90FF; border: 1px solid #1E90FF; }
+#select-year2 { display: none; }
+
+.body-set1 .refresh-div { position: relative; margin: 1vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.body-set1 .refresh-div .refresh-img { width: 100%; max-width: 150px; color: #fff; cursor: pointer; transition: transform 10s ease-in-out; }
+.body-set1 .refresh-div .refresh-img:hover { transform: rotateX(-3600deg); }
+/* .body-set1 .refresh-div .refresh-i { font-size: 3rem; position: absolute; left: 50%; top: 50%; transform: translateX(-50%) translateY(-50%); z-index: 909; } */
+
+.body-set1 .content-card { margin: 1vh; padding: 0; height: 80.2vh; min-height: 600px; display: flex; flex-direction: column; justify-items: flex-start; }
+.body-set1 .content-card .content-top { height: 2.4rem; background-color: #193643; border-bottom: 1px solid #193643; }
+.body-set1 .content-card .content-top p { color: #C2FE06; line-height: 2.4rem; text-align: center; font-size: 1.4rem; font-family: VWTextOffice_Bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.body-set1 .content-card .content-filter { height: 8vh; padding: 0 3vh; margin-top: 1vh; display: flex; align-items: center; justify-content: space-between; }
+.body-set1 .content-card .content-filter select { min-width: 180px; height: 4vh; min-height: 30px; margin-right: 1vh; padding-right: 30px; font-size: 1.1rem; font-family: VWTextOffice_Bold; }
+.body-set1 .content-card .content-filter select { text-align: left; border-radius: 5px; color: #FFFFFF; border: 1px solid #0E6B45; background-color:#0E6B45; cursor: pointer; }
+.body-set1 .content-card .content-filter select:hover { border: 1px solid #666666; box-shadow: 0 0 12px 0 rgba(200,200,200,0.6); }
+.body-set1 .content-card .content-filter select option { font-size: 1.1rem; color: #FFFFFF; background-color: #384153; cursor: pointer; }
+.body-set1 .content-card .content-filter #reset_score { display: none; width: 36px; padding: 5px; color: #888; cursor: pointer; transition: transform 0.5s ease-in-out; }
+
+.body-set1 .content-card .content-main { padding: 0 3vh; margin-top: -1vh; }
+.body-set1 .content-card .content-main .content-main-item { width: 47%; float: left; margin-top: 2vh; }
+.body-set1 .content-card .content-main .content-main-item .content-main-item-top { color: #9DACB8; border-bottom: 1px solid #9DACB8; }
+.body-set1 .content-card .content-main .content-main-item .content-main-item-top .content-main-item-title { width: fit-content; border-bottom: 1px solid #9DACB8; margin-bottom: 2px; display: flex; align-items: flex-end; }
+.body-set1 .content-card .content-main .content-main-item .content-main-item-top .content-main-item-title img { width: 56px; padding: 6px; }
+.body-set1 .content-card .content-main .content-main-item .content-main-item-top .content-main-item-title span { font-size: 1.4rem; font-family: VWTextOffice_Bold; padding: 3px 6px; }
+.body-set1 .content-card .content-main .content-main-item .content-main-item-list { text-align: center; }
+.body-set1 .content-card .content-main .content-main-item .content-main-item-list p { width: 100%; line-height: 4vh; min-height: 30px; margin: 0; margin-top: 1vh; background-color: #616876; }
+.body-set1 .content-card .content-main .content-main-item .content-main-item-list p { display: flex; align-items: center; justify-content: space-between; overflow: hidden; border-radius: 2px; }
+.body-set1 .content-card .content-main .content-main-item .content-main-item-list p span { width: 50%; line-height: 4vh; min-height: 30px; background-color: #5F7484; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.body-set1 .content-card .content-main .content-main-item .content-main-item-list p input { width: 50%; line-height: 4vh; min-height: 30px; margin: 0; padding: 0; border: 0; text-align: center; color: #FFFFFF; cursor: pointer; }
+.body-set1 .content-card .content-main .content-main-item .content-main-item-list[data-type="product"] p { width: 47%; float: left; }
+.body-set1 .content-card .content-main .content-main-item .content-main-item-list[data-type="product"] p:nth-child(even) { margin-left: 6%; }
+.body-set1 .content-card .content-main .content-main-item .content-main-item-list[data-type="product"] p span { background-color: #2B5376; }
+.body-set1 .content-card .content-main .content-main-item .content-main-item-list[data-type="service"] p span { background-color: #303A42; }
+
+.body-set1 .content-card .content-score { padding: 3vh; }
+.body-set1 .content-card .content-score-row { line-height: 4vh; min-height: 30px; color: #fff; margin-bottom: 1vh; overflow: hidden; }
+.body-set1 .content-card .content-score-row:last-child { margin-bottom: 0; }
+.body-set1 .content-card .content-score-row span:first-child { float: left; line-height: 4vh; min-height: 30px; background-color: #8E939D; border-radius: 4px; width: 80%; }
+.body-set1 .content-card .content-score-row span:first-child { display: flex; align-items: center; flex-direction: row; overflow: hidden; }
+.body-set1 .content-card .content-score-row span:first-child img { width: 46px; padding: 8px 10px; object-fit: cover; object-position: center; box-sizing: border-box; }
+.body-set1 .content-card .content-score-row span:first-child label { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.body-set1 .content-card .content-score-row:last-child span:first-child { background-color: #0E6B45; font-family: VWTextOffice_Bold; }
+.body-set1 .content-card .content-score-row span:last-child { float: right; line-height: 4vh; min-height: 30px; background-color: #8E939D; border-radius: 4px; width: calc(20% - 1vh); }
+.body-set1 .content-card .content-score-row span:last-child { display: flex; align-items: center; justify-content: center; cursor: pointer; -webkit-user-select: text; }
+.body-set1 .content-card .content-score-row:last-child span:last-child { background-color: #0E6B45; font-family: VWTextOffice_Bold; }
+.body-set1 .content-card .content-score-row span:hover { box-shadow: 0 0 12px 0 rgba(200,200,200,0.6); }
+.body-set1 .content-card .content-score-row span label { margin: 0; cursor: pointer; }
+
+.body-set1 .content-card .content-table { padding: 0 3vh 3vh 3vh; margin-top: -1vh; }
+.full-table { border-bottom: 2px solid #B6BFC5; }
+.full-table thead th { line-height: 5vh; border-top: 2px solid #B6BFC5; border-bottom: 2px solid #B6BFC5; font-family: VWTextOffice_Bold; }
+.full-table thead th { min-width: 50px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; table-layout: fixed; }
+.full-table tbody tr { transition: all 0.3s ease; }
+.full-table tbody tr:nth-child(odd) { background-color: rgba(255,255,255,0.12); } /* 设置奇数行(odd)/偶数行(even)的背景颜色  */
+.full-table tbody tr:hover { font-family: VWTextOffice_Bold; box-shadow: 0 0 20px 0 rgba(255, 255, 0, 0.6); }
+.full-table tbody tr td { min-width: 50px; font-size: 0.875rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; table-layout: fixed; }
+.full-table tbody tr:hover td { font-size: 15px !important; }
+.full-table tbody tr td:nth-child(1) { width: 10%; }
+.full-table tbody tr td:nth-child(2) { width: 30%; }
+.full-table tbody tr td:nth-child(3) { width: 22%; border-right: 0px solid #D9D9D9; }
+.full-table tbody tr td:nth-child(4) { height: 100%; text-align: left; display: flex; align-items: center; }
+.full-table tbody tr td:nth-child(4) .rankbar { background-color: #99D1CD; height: 14px; width: 1px; margin: 0 0.5rem; float: left; }
+.full-table tbody tr td:nth-child(4) .selectedbar { background-color: #C2FE06; }
+.full-table tbody tr td:nth-child(4) span { padding-left: 0.5rem; float: left; }
+.full-table tbody tr:hover td:nth-child(4) .rankbar { height: 15px !important; }
+.full-table tbody .selected td { background-color: #0E6B45; color: #C2FE06; font-family: VWTextOffice_Bold; }
+
+
+
+@media screen and (max-width: 992px) {
+	#select-year { display: none; }
+	#select-year2 { display: inline-block; }
+	.body-set1 .refresh-col { display: none; }
+}
+@media screen and (max-width: 666px) {
+	.body-set1 .filter-card select { width: calc(50% - 1vh + 2px); }
+	.body-set1 .filter-card .selectdown:nth-child(even) select { margin-right: 0; }
+}

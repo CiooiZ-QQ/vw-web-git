@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" class="page-fill">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta http-equiv="pragram" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
+		<meta http-equiv="expires" content="0">
+		<title>登录</title>
+		<link rel="shortcut icon" href="../images/favicon1.png?v=2.6.1" type="image/x-icon" />
+		<link rel="stylesheet" href="../css/oksub.css?v=2.6.1" />
+		<script src="../lib/jquery-1.12.4.min.js?v=2.6.1"></script>
+		<script src="../js/common.js?v=2.6.1"></script>
+		<style type="text/css">
+			#login .layui-form-item label{position: unset;}
+		</style>
+	</head>
+	<body class="page-fill">
+		<div class="page-fill" id="login">
+			<form class="layui-form">
+				<div class="login_face"><img id="tx" src="../images/login.png"></div>
+				<div class="layui-form-item input-item">
+					<label for="username">账号/手机号</label>
+					<input type="text" lay-verify="required" name="LOGIN_NAME" placeholder="请输入账号/或手机号码" value="" autocomplete="off" id="LOGIN_NAME"
+					 class="layui-input">
+				</div>
+				<div class="layui-form-item input-item">
+					<label for="password">密码</label>
+					<input type="password" lay-verify="required" name="PASSWORD" placeholder="请输入密码" value="" autocomplete="off" id="PASSWORD"
+					 class="layui-input">
+				</div>
+				<div class="layui-form-item input-item">
+					<div id="slider"></div>
+					<!-- <label for="captcha">验证码</label>
+					<input type="text" lay-verify="required|captcha" name="captcha" placeholder="请输入验证码" autocomplete="off" id="captcha"
+					 maxlength="4" class="layui-input">
+					<div class="img ok-none-select" id="captchaImg"></div> -->
+				</div>
+				<div class="layui-form-item">
+					<button class="layui-btn layui-block" lay-filter="login" lay-submit="">登录</button>
+				</div>
+			</form>
+		</div>
+		<!--js逻辑-->
+		<script src="../lib/layui/layui.js?v=2.6.1"></script>
+		<script src="../lib/vue/axios.min.js?v=2.6.1"></script>
+		<script src="../js/global.js?v=2.6.1"></script>
+		<script>
+			// 删除缓存
+			g_f_localstorage_clear();
+			localStorage.removeItem('menus');
+			localStorage.removeItem('login_information');
+			
+			$(function(){	
+				if (localStorage.getItem(g_accr_login_info) != null) {
+					var login_information = JSON.parse(localStorage.getItem(g_accr_login_info));
+					if (login_information.login_name != null) {
+						$("#LOGIN_NAME").parent().addClass("layui-input-active");
+						$("#LOGIN_NAME").val(login_information.login_name);
+					}
+				}
+			})
+			
+			layui.use(["form", "okGVerify", "okUtils", "okLayer"], function() {
+				let form = layui.form;
+				let $ = layui.jquery;
+				let okGVerify = layui.okGVerify;
+				let okUtils = layui.okUtils;
+				let okLayer = layui.okLayer;
+				
+				//判断是否自动登录
+				var result = localStorage.getItem(g_accr_auth_token);
+				console.log('Token：', result);
+				// debugger;
+				if (result != null) {
+					axios_F1('Common/CheckToken').then(response=>{ 
+						console.log('判断是否自动登录',response);
+						if (response == undefined ) return;
+						if (response.status == 200) window.location = "../index.html";
+					}); //通过接口判断是否自动登录
+				};
+				
+				/**
+				 * 表单提交
+				 */
+				form.on("submit(login)", function(data) {
+					okUtils.ajax(g_req_url + "System/UserLondin", "post", JSON.stringify(data.field), true, true).done(function (response) {
+						// console.log(200,response );
+						if (response.success != 'ok') {
+							// layer.msg("没有查询到用户信息,或者");
+						    okLayer.redCrossMsg("账户不存在或密码输入有误！", function(){});
+							return;
+						};
+						
+						//debugger;
+						if(!jQuery.isEmptyObject(response.data)){
+							if (response.data.is_can_export == undefined || response.data.is_can_export == null) response.data.is_can_export = true;
+							localStorage.setItem(g_accr_login_info, JSON.stringify(response.data));
+							localStorage.setItem(g_accr_auth_usid, response.data.usid);
+						}
+						okLayer.greenTickMsg("成功登录", function () {
+							//登录获取token
+							let token = response.data.token;
+							if (isNullOrEmpty(token)) {
+								okUtils.ajax(g_req_url + "Authentication/GetToken", "post",JSON.stringify(data.field), true,true).done(function (response) {
+									console.log('登录获取token',response);
+									localStorage.setItem(g_accr_auth_token, response);
+									 window.location = "../index.html";
+								});
+							} else {
+								console.log('登录获取token',token);
+								localStorage.setItem(g_accr_auth_token, token);
+								window.location = "../index.html";
+							}
+						})
+
+					}).fail(function (error) {
+						console.log(error)
+					});
+					return false;
+				});
+
+				/**
+				 * 表单input组件单击时
+				 */
+				$("#login .input-item .layui-input").click(function(e) {
+					e.stopPropagation();
+					$(this).addClass("layui-input-focus").find(".layui-input").focus();
+				});
+
+				/**
+				 * 表单input组件获取焦点时
+				 */
+				$("#login .layui-form-item .layui-input").focus(function() {
+					$(this).parent().addClass("layui-input-focus");
+				});
+
+				/**
+				 * 表单input组件失去焦点时
+				 */
+				$("#login .layui-form-item .layui-input").blur(function() {
+					$(this).parent().removeClass("layui-input-focus");
+					if ($(this).val() != "") {
+						$(this).parent().addClass("layui-input-active");
+					} else {
+						$(this).parent().removeClass("layui-input-active");
+					}
+				})
+			});
+		</script>
+	</body>
+</html>

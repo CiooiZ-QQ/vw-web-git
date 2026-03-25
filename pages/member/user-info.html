@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>基本资料</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../css/oksub.css?v=2.6.1">
+
+    <style>
+        .pic {border-radius:50%;width: 150px;height: 150px;background-size: cover;}
+       .location {position: absolute;right: 10px;bottom: -80px;}
+	   .txt_sty{min-width: 130px;}
+    </style>
+</head>
+<body class="user-info" >
+
+    <div class="layui-fluid" style="margin-top:20px;">
+        <div class="layui-row layui-col-space15" >
+            <div class="layui-col-md12" >
+                   <div  class="layui-form" lay-filter="layfrom" >
+                       <div style="width:100%">
+                           <div style="text-align:center;">
+                               <img class="pic" id="IMAGE" id="IMAGE" src="../../images/login.png" onerror="this.src='../../images/login.png'" style="border-radius: 50%;"  />
+							   <input type="hidden" name="IMAGEFILE" id="IMAGEFILE" />
+                           </div>
+						   <div style="width: 20%;margin-left: 63%;">
+						 <button type="button" class="layui-btn" id="test1">
+						   <i class="layui-icon">&#xe67c;</i>上传头像
+						 </button>
+						 </div>
+                           <div style="width:60%;margin-left:16%;margin-right: margin-left:22%;">
+                               <div class="layui-form-item" style="text-align: center;margin-left: -20px;">
+                                   <div class="layui-input-block txt_sty">
+                                       <input type="radio" name="SEX" value="0" title="男" checked>
+                                       <input type="radio" name="SEX" value="1" title="女">
+                                   </div>
+                               </div>
+							   <div class="layui-form-item">
+							       <label class="layui-form-label">昵称</label>
+							       <div class="layui-input-block">
+							           <input type="text" name="NICK_NAME" placeholder="请输入昵称" autocomplete="off" class="layui-input txt_sty" >
+							       </div>
+							   </div>
+                               <div class="layui-form-item">
+                                   <label class="layui-form-label">账号</label>
+                                   <div class="layui-input-block">
+                                       <input type="text" name="LOGIN_NAME" placeholder="请输入账户" autocomplete="off" class="layui-input layui-disabled txt_sty"  disabled>
+                   				    <input type="hidden" id="USERID" name="USERID">
+                   				    <input type="hidden" id="STATE" name="STATE">
+									 <input type="hidden" id="ROLE_ID" name="ROLE_ID">
+                                   </div>
+                               </div>
+                   			<div class="layui-form-item">
+                   			    <label class="layui-form-label">邮箱</label>
+                   			    <div class="layui-input-block">
+                   			        <input type="text" name="EMAIL" placeholder="请输入邮箱" autocomplete="off" class="layui-input txt_sty"   lay-verify="EMAIL" >
+                   			    </div>
+                   			</div>
+                               <div class="layui-form-item">
+                                   <label class="layui-form-label">手机号码</label>
+                                   <div class="layui-input-block">
+                                       <input type="text" name="PHONE" placeholder="请输入手机号码" autocomplete="off" class="layui-input txt_sty"
+                                              lay-verify="phone">
+                                   </div>
+                               </div>
+                           </div>
+						   
+						   <div class="layui-form-item location">
+						       <div class="layui-input-block">
+						           <button class="layui-btn " lay-submit lay-filter="edit" >立即提交</button>
+						           <button type="text" class="layui-btn layui-btn-primary" id="cz">重置</button>
+						       </div>
+						   </div>
+                       </div>
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="../../lib/layui/layui.js?v=2.6.1"></script>
+    <script type="text/javascript" src="../../js/common.js?v=2.6.1"></script>
+    <script type="text/javascript" src="../../lib/jquery-1.12.4.min.js?v=2.6.1"></script>
+	<script src="../../js/global.js?v=2.6.1"></script>
+</body>
+</html>
+<script>
+	
+	function mydata(){
+		var jsonStr="";
+	
+		if(localStorage.getItem(g_accr_login_info)!=null){
+			var login_information= JSON.parse(localStorage.getItem(g_accr_login_info));
+			$.ajax({
+				url: g_req_url+"System/UserInformation",
+				type: "post",
+				data:JSON.stringify({login_name: login_information.login_name}),
+				dataType: "json",
+				async:false, 
+				headers,
+				contentType:"application/json",
+				success(response) {
+					if(response.IsSuccess==true){
+						jsonStr=response.Data;
+						$("#IMAGEFILE").val(response.Data.data.IMAGE);
+						$("#IMAGE").prop("src",response.Data.data.IMAGE);
+						$("#USERID").val(response.Data.data.USID);
+						$("#STATE").val(response.Data.data.STATE);
+					}
+				},
+				errors(error) {
+					console.log(error)
+				}
+			})
+		}
+		return jsonStr;
+	}
+	
+	layui.use([ "form", "okUtils","upload"], function () {
+		let form = layui.form;
+	    let okUtils = layui.okUtils;
+		 var upload = layui.upload;
+		  //执行实例
+		  var uploadInst = upload.render({
+		    elem: '#test1' ,//绑定元素
+			accept: "images",
+			auto:false,
+			size: 1024,
+			url: g_req_url+"System/UploadFile" //上传接口
+		    , choose: function (res) {
+				res.pushFile();
+				res.preview(function (index, file, result) {
+				layer.msg('上传成功！', {icon: 1});
+			    $("#IMAGEFILE").val(result);
+				$("#IMAGE").prop("src",result);
+				var login_information=JSON.parse(localStorage.getItem(g_accr_login_info));
+					login_information.image=result;
+		         window.localStorage.setItem(g_accr_login_info,JSON.stringify(login_information));
+				});
+				}
+		    ,error: function(res){
+			layer.msg('上传失败！' + index, {icon: 5});
+		    }
+		  });
+	    $(".layui-form").css("height",$(window).height()-110);
+		form.val("layfrom", mydata().data);
+
+		form.on("submit(edit)", function (data) {
+			data.field.ISOK=false;
+			data.field.P_USID= localStorage.getItem(g_accr_auth_usid);
+			if (data.field.IS_CONSOLE == undefined) data.field.IS_CONSOLE = 1;
+			data.field.PROJECT_NAME = '';
+			okUtils.ajax(g_req_url+"System/UserUpdate", "post",JSON.stringify(data.field), true,true).done(function (response) {
+				if(response.success=="ok"){
+					success("修改");
+					setInterval(function() {
+						window.parent.location.reload();
+					}, 1000);
+				}else{
+					errors("修改");
+				}
+			}).fail(function (error) {
+			   console.log(error)
+			});
+			return false;
+		});
+
+	    $("#cz").on("click",function(){
+	    	form.val("layfrom", mydata().data);
+	    })
+	})
+	 $(window).resize(function () {         
+        $(".layui-form").css("height",$(window).height()-110)
+	 });
+	
+	 function success(data) {
+	     layui.use(["okLayx"], function () {
+	     let okLayx = layui.okLayx;
+	     okLayx.notice({
+	         title: "成功提示",
+	         type: "success",
+	         message: data+"用户信息成功！"
+	         });
+	     });
+	 }
+	 function errors(data) {
+	     layui.use(["okLayx"], function () {
+	         let okLayx = layui.okLayx;
+	         okLayx.notice({
+	             title: "错误提示",
+	             type: "error",
+	             message: data+"用户信息失败！"
+	         });
+	     });
+	 }
+</script>

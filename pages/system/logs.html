@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title data-i18n-title="logtitle">日志列表</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../css/oksub.css?v=2.6.1">
+		<script src="../../lib/jquery-1.12.4.min.js?v=2.6.1"></script>
+		<style>
+			.layui-btn-group .layui-btn:first-child{border: 1px solid #e6e6e6;}
+			.active_bj{    background-color: #66707C !important;
+    color: #FFF !important;}
+			.layui-btn-group .layui-btn{background-color: #fff;color: #333;border:1px solid #e6e6e6; border-left: 0; }
+			.ok-body{padding-bottom: 0;}
+			.layui-form{margin-top: 0;}
+		</style>
+	</head>
+	<body>
+		<div class="ok-body">
+			<!--模糊搜索区域-->
+			<div class="layui-row">
+				<form class="layui-form layui-col-md12 ok-search">
+					<input class="layui-input" autocomplete="off" id="startTime" name="startTime"
+						data-i18n-placeholder="starttime" style="display: none;">
+					<input class="layui-input" autocomplete="off" id="endTime" name="endTime"
+						data-i18n-placeholder="endtime" style="display: none;">
+
+					<input class="layui-input" autocomplete="off" name="account" data-i18n-placeholder="account">
+					<button class="layui-btn" lay-submit="" lay-filter="search">
+						<i class="layui-icon layui-icon-search"></i>
+					</button>
+					<div class="layui-btn-group" style="margin-left: 10px;">
+					  <button type="button" class="layui-btn active_bj" lay-submit="" lay-filter="search" id="week" name="week">近七天</button>
+					  <button type="button" class="layui-btn" lay-submit="" lay-filter="search" id="month" name="month">近一个月</button>
+					  <button type="button" class="layui-btn" lay-submit="" lay-filter="search" id="halfyear" name="halfyear">近半年</button>
+					  <button type="button" class="layui-btn" lay-submit="" lay-filter="search" id="oneyear" name="oneyear">近一年</button>
+					</div>
+					
+					
+					
+				</form>
+
+			</div>
+				<div class="layui-tab layui-tab-card">
+					<ul class="layui-tab-title">
+						<li class="layui-this" data-i18n-text="systemlog">系统日志</li>
+						<li id="logapi" data-i18n-text="apilog" style=" display: none;">Api日志</li>
+						<!-- <div class="layui-btn-group" style="margin-left: 10px;">
+						  <button type="button" class="layui-btn" lay-submit="" lay-filter="search" id="week" name="week">近七天</button>
+						  <button type="button" class="layui-btn" lay-submit="" lay-filter="search" id="month" name="month">近一个月</button>
+						  <button type="button" class="layui-btn" lay-submit="" lay-filter="search" id="halfyear" name="halfyear">近半年</button>
+						  <button type="button" class="layui-btn" lay-submit="" lay-filter="search" id="oneyear" name="oneyear">近一年</button>
+						</div> -->
+					</ul>
+					<div class="layui-tab-content" style="height: 80%;" >
+						<div class="layui-tab-item layui-show">
+							<table class="layui-hide" id="tableId" lay-filter="tableFilter"></table>
+						</div>
+						<div class="layui-tab-item">
+							<table class="layui-hide" id="UsertableId" lay-filter="UsertableFilter"></table>
+						</div>
+				
+					</div>
+				</div>
+				
+				<!-- <div class="layui-tab-content" style="height: 80%;">
+					<div class="layui-tab-item layui-show">
+						<table class="layui-hide" id="tableId" lay-filter="tableFilter"></table>
+					</div>
+					<div class="layui-tab-item">
+						<table class="layui-hide" id="UsertableId" lay-filter="UsertableFilter"></table>
+					</div>
+				
+				</div> -->
+			
+			
+
+		</div>
+		<!--js逻辑-->
+		<script src="../../lib/layui/layui.js?v=2.6.1"></script>
+		<script src="../../js/common.js?v=2.6.1"></script>
+		<script src="../../js/i18n/jquery.i18n.properties.js?v=2.6.1"></script>
+		<script src="../../js/i18n/i18np.js?v=2.6.1"></script>
+		<script>
+		
+			$(function() {
+				
+				localStorage.setItem(g_accr_language_path, '../../');
+				
+				layui.use(["element", "table", "form", "laydate", "okLayer", "okUtils", "okMock","i18np"], function() {
+					var auid = localStorage.getItem(g_accr_auth_usid).toString();
+					if (auid == "5660f012-1351-42f8-955a-e470325e0847") {
+						$("#logapi").css("display", 'inline-block');
+					}
+					
+					var element = layui.element;
+					var i18np = layui.i18np;
+					var table = layui.table;
+					var form = layui.form;
+					var util = layui.util;
+					var laydate = layui.laydate;
+					var okLayer = layui.okLayer;
+					var okUtils = layui.okUtils;
+					var okMock = layui.okMock;
+					
+					i18np.loadProperties();
+					util.fixbar({});
+					laydate.render({
+						elem: "#startTime",
+						format: 'yyyy-MM-dd',
+						type: "date"
+					});
+					laydate.render({
+						elem: "#endTime",
+						format: 'yyyy-MM-dd',
+						type: "date"
+					});
+					
+					var result = localStorage.getItem(g_accr_auth_token);
+					  var headers={Authorization:'Bearer '+result}; 
+					
+					var articleTable = table.render({
+						elem: "#tableId",
+						url: g_req_url + "System/GetSystemLog",
+						where: {
+							USID: localStorage.getItem(g_accr_auth_usid),
+							P_USID: localStorage.getItem(g_accr_auth_usid)
+						},
+						headers,
+						title: "Logs",
+						page: true,height:'full-150',
+						even: true,
+						toolbar: "#toolbarTpl",
+						size: "sm",
+						parseData: function(res) { //res 即为原始返回的数据
+						  console.log(222222222)
+							return {
+								"code": res.Data.code, //解析接口状态   （必须是0 才可以）
+								"msg": res.Data.msg, //解析提示文本
+								"count": res.Data.data.TotalCount, //解析数据长度
+								"data": res.Data.data.Items //解析数据列表
+							};
+						},
+
+						limit:20,
+						request: {
+							pageName: 'pageindex' //页码的参数名称，默认：page
+								,
+							limitName: 'pagesize' //每页数据量的参数名，默认：limit
+						},
+						cols: [
+							[{
+									field: "OP_USER_ACCOUNT",
+									title: i18np.prop('op_account_number'),
+									align: 'center'
+								},
+								{
+									field: "OP_USER_NAME",
+									title: i18np.prop('op_user_name'),
+									align: 'center'
+								},
+								{
+									field: "OP_MENU",
+									title: i18np.prop('op_menu'),
+									align: 'center'
+								},
+								{
+									field: "OP_MENU_CHILD",
+									title: 'Manipulation Menu Child',
+									align: 'center'
+								},
+								{
+									field: "OP_CONTENT",
+									title: i18np.prop('op_content'),
+									align: 'center'
+								},
+								{
+									field: "OP_USER_IP",
+									title: i18np.prop('op_user_ip'),
+									align: 'center'
+								},
+								{
+									field: "CREATE_TIME",
+									title: i18np.prop('op_create_time'),
+									sort: true,
+									align: 'center',
+									templet: '<div>{{ layui.util.toDateString(d.CREATE_TIME, "yyyy-MM-dd HH:mm:ss") }}</div>'
+								}
+							]
+						],
+						done: function(res, curr, count) {
+							//console.log(res, curr, count)
+						}
+					});
+					
+					var result = localStorage.getItem(g_accr_auth_token);
+					  var headers={Authorization:'Bearer '+result};
+					  console.log(11111111111)
+					var UserTable = table.render({
+						elem: "#UsertableId",
+						url: g_req_url + "System/GetUserApiLog",
+						headers,
+						title: "Logs",height:'full-150',
+						page: true,
+						even: true,
+						toolbar: "#toolbarTpl",
+						size: "sm",
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.Data.code, //解析接口状态   （好像必须是0 才可以）
+								"msg": res.Data.msg, //解析提示文本
+								"count": res.Data.data.TotalCount, //解析数据长度
+								"data": res.Data.data.Items //解析数据列表
+							};
+						},
+						where: {
+							account: auid,
+							USID: localStorage.getItem(g_accr_auth_usid),
+							P_USID: localStorage.getItem(g_accr_auth_usid)
+						},
+						limit: 20,
+						request: {
+							pageName: 'pageindex' //页码的参数名称，默认：page
+								,
+							limitName: 'pagesize' //每页数据量的参数名，默认：limit
+						},
+						cols: [
+							[{
+									field: "AT_USER_ACCOUNT",
+									title: "用户账号",
+									align: 'center'
+								},
+								{
+									field: "AT_USID",
+									title: "用户id",
+									align: 'center'
+								},
+								{
+									field: "AT_USER_NAME",
+									title: "用户名称",
+									align: 'center'
+								},
+								{
+									field: "AT_ACCESS_REQUEST",
+									title: "请求类型",
+									align: 'center'
+								},
+								{
+									field: "CREATE_TIME",
+									title: "请求时间",
+									align: 'center',
+									sort: true,
+									templet: '<div>{{ layui.util.toDateString(d.CREATE_TIME, "yyyy-MM-dd HH:mm:ss") }}</div>'
+								},
+								{
+									field: "AT_ACCESS_ACTION",
+									title: "api地址",
+									align: 'center'
+
+								}
+							]
+						],
+						done: function(res, curr, count) {
+							console.log(res, curr, count)
+						}
+					});
+					// element.on('tab(tabwang)', function(data){
+					// 	console.log(this.getAttribute('lay-id'));
+					// 	articleTable.reload({
+					// 		where: {
+					// 			day:this.getAttribute('lay-id'),
+					// 		},
+					// 		page: {
+					// 			curr: 1
+					// 		}
+					// 	});
+					// 	UserTable.reload({
+					// 		where: {
+					// 			day:this.getAttribute('lay-id')
+					// 		},
+					// 		page: {
+					// 			curr: 1
+					// 		}
+					// 	});
+					// 	});
+					
+					//Print_Log("logs", "查询", "查询日志信息");
+					form.on("submit(search)", function(data) {
+						console.log('测试字段',data.elem.id);
+						$(this).addClass('active_bj').siblings().removeClass('active_bj');
+						Print_Log("logs", "搜索", "搜索日志信息");
+						articleTable.reload({
+							where: {
+								startTime: data.field.startTime,
+								endTime: data.field.endTime,
+								account: data.field.account,
+								timerange:data.elem.id,
+							},
+							page: {
+								curr: 1
+							}
+						});
+						UserTable.reload({
+							where: {
+								startTime: data.field.startTime,
+								endTime: data.field.endTime,
+								account: data.field.account,
+								timerange:data.elem.id,
+							},
+							page: {
+								curr: 1
+							}
+						});
+						return false;
+					});
+						
+					table.on("toolbar(tableFilter)", function(obj) {
+
+						switch (obj.event) {
+							case "batchEnabled":
+								batchEnabled();
+								break;
+							case "batchDisabled":
+								batchDisabled();
+								break;
+							case "batchDel":
+								batchDel();
+								break;
+							case "add":
+								add();
+								break;
+						}
+					});
+
+					table.on("tool(tableFilter)", function(obj) {
+						var data = obj.data;
+						switch (obj.event) {
+							case "edit":
+								edit(data.id);
+								break;
+							case "del":
+								del(data.id);
+								break;
+						}
+					});
+
+					function batchEnabled() {
+						okLayer.confirm("确定要批量上架吗？", function(index) {
+							layer.close(index);
+							var idsStr = okUtils.table.batchCheck(table);
+							if (idsStr) {
+								okUtils.ajax("/article/batchNormal", "post", {
+									idsStr: idsStr
+								}).done(function(response) {
+									console.log(response);
+									okUtils.table.successMsg("批量上架成功");
+								}).fail(function(error) {
+									console.log(error)
+								});
+							}
+						});
+					}
+
+					function batchDisabled() {
+						okLayer.confirm("确定要批量下架吗？", function(index) {
+							layer.close(index);
+							var idsStr = okUtils.table.batchCheck(table);
+							if (idsStr) {
+								okUtils.ajax("/article/batchStop", "post", {
+									idsStr: idsStr
+								}).done(function(response) {
+									console.log(response);
+									okUtils.table.successMsg("批量下架成功");
+								}).fail(function(error) {
+									console.log(error)
+								});
+							}
+						});
+					}
+
+					function batchDel() {
+						okLayer.confirm("确定要批量删除吗？", function(index) {
+							layer.close(index);
+							var idsStr = okUtils.table.batchCheck(table);
+							if (idsStr) {
+								okUtils.ajax("/article/batchDel", "post", {
+									idsStr: idsStr
+								}).done(function(response) {
+									console.log(response);
+									okUtils.table.successMsg("批量删除成功");
+								}).fail(function(error) {
+									console.log(error)
+								});
+							}
+						});
+					}
+
+					function add() {
+						okLayer.open("添加文章", "article-add.html", "90%", "90%", null, function() {
+							articleTable.reload();
+						})
+					}
+
+					function edit(id) {
+						okLayer.open("编辑文章", "article-edit.html?id=" + id, "90%", "90%", null, function() {
+							articleTable.reload();
+						})
+					}
+
+					function del(id) {
+						okLayer.confirm("确定要删除吗？", function() {
+							okUtils.ajax("/article/batchDel", "post", {
+								idsStr: id
+							}).done(function(response) {
+								console.log(response);
+								okUtils.table.successMsg("删除成功");
+							}).fail(function(error) {
+								console.log(error)
+							});
+						})
+					}
+				})
+			});
+		</script>
+		<!-- 头工具栏模板 -->
+		<script type="text/html" id="toolbarTpl">
+			<div class="layui-btn-container">
+
+
+				<!-- <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="batchDel">批量删除</button>-->
+
+			</div>
+		</script>
+		<!-- 链接模板 -->
+		<script type="text/html" id="urlTpl">
+			<a href="{{d.url}}" target="_blank">{{d.url}}</a>
+		</script>
+		<!-- 是否指顶模板
+            <input type="checkbox" name="isTop" value="{{d.isTop}}" lay-skin="switch" lay-text="是|否" {{ d.isTop== true ? 'checked' : ''}}>
+        -->
+		<script type="text/html" id="topTpl">
+		{{# if(d.isTop == true){ }}
+			<span class="layui-btn layui-btn-normal layui-btn-xs">已置顶</span>
+			{{# } else if(d.isTop == false) { }}
+				<span class="layui-btn layui-btn-warm layui-btn-xs">未置顶</span>
+				{{# } }}
+		</script>
+		<!-- 发布状态模板
+            <input type="checkbox" name="top" value="{{d.status}}" lay-skin="switch" lay-text="已发布|未发布" {{ d.status== true ? 'checked' : ''}}>
+        -->
+		<script type="text/html" id="statusTpl">
+		{{# if(d.status == true){ }}
+			<span class="layui-btn layui-btn-normal layui-btn-xs">已发布</span>
+			{{# } else if(d.status == false) { }}
+				<span class="layui-btn layui-btn-warm layui-btn-xs">未发布</span>
+				{{# } }}
+		</script>
+		<!-- 行工具栏模板 -->
+		<script type="text/html" id="operationTpl">
+			<a href="javascript:" title="编辑" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
+			<a href="javascript:" title="删除" lay-event="del"><i class="layui-icon">&#xe640;</i></a>
+		</script>
+	</body>
+</html>

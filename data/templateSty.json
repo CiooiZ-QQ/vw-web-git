@@ -1,0 +1,58 @@
+[
+  {
+    "top": "#ffffff",
+    "left": "#20222A",
+    "selected": "#009688", 
+    "logo": "", 
+    "alias": "default", 
+    "styclass": "selSty1"
+  },
+  {
+    "top": "#ffffff",
+    "left": "#20222A",
+    "selected": "#992c2b",
+    "logo": "#20222A",
+    "alias": "red", 
+    "styclass": "selSty4"
+  },
+  {
+    "top": "#ffffff",
+    "left": "#344058",
+    "selected": "#1E9FFF",
+    "logo": "#1E9FFF",
+    "alias": "ocean",
+    "styclass": "selSty2"
+  },
+  {
+    "top": "#ffffff",
+    "left": "#3A3D49",
+    "selected": "#5FB878",
+    "logo": "#2F9688",
+    "alias": "green", 
+    "styclass": "selSty1"
+  },
+  {
+    "top": "#2F9688",
+    "left": "20222A",
+    "selected": "#5FB878",
+    "logo": "#226A62",
+    "alias": "green-header",
+    "styclass": "selSty1"
+  },
+  {
+    "top": "#1E9FFF",
+    "left": "#20222A",
+    "selected": "#1E9FFF",
+    "logo": "#0085E2",
+    "alias": "ocean-header", 
+    "styclass": "selSty2"
+  },
+  {
+    "top": "#992c2b",
+    "left": "#20222A",
+    "selected": "#992c2b",
+    "logo": "#20222A",
+    "alias": "red-header", 
+    "styclass": "selSty4"
+  }
+]

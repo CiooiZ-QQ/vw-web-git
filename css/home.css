@@ -1,0 +1,37 @@
+
+.body-set1 #seg-list { margin-top: 1vh; }
+
+.body-set1 .content-card { height: 74vh; }
+
+.full-table { border-bottom: 2px solid #999999; }
+.full-table thead th { line-height: 2.2rem; border-top: 2px solid #999999; border-bottom: 2px solid #999999; font-weight: 400; letter-spacing: 0.5px; }
+.full-table tbody tr { transition: all 0.3s ease; }
+.full-table tbody tr:nth-child(odd) { background-color: rgba(255,255,255,0.12); } /* 设置奇数行(odd)/偶数行(even)的背景颜色  */
+.full-table tbody tr:hover { color: #FFFFFF; font-size: 16px; font-weight: bold; box-shadow: 0 0 20px 0 rgba(255, 255, 0, 0.6); }
+.full-table thead th, .full-table tbody td { min-width: 50px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; table-layout: fixed; }
+.full-table tbody td { color: #FFFFFF; }
+.full-table tbody tr td:nth-child(1) { width: 8%; }
+.full-table tbody tr td:nth-child(2) { width: 20%; min-width: 100px; border-right: 0.1rem solid #999999; text-align: right; padding-right: 0.8rem; }
+.full-table tbody tr td:nth-child(3) { width: 32%; text-align: left; }
+.full-table tbody tr td:nth-child(3) div { background: #00B0F0; height: 14px; width: 1px; float: left; }
+.full-table tbody tr:hover td:nth-child(3) div { height: 16px; }
+.full-table tbody tr td:nth-child(3) span { padding-left: 0.5rem; float: left; }
+.full-table tbody tr td:nth-child(4) { width: 24%; position: relative; }
+.full-table tbody tr td:nth-child(4) img { width: 14px; height: 14px; position: absolute; left: 30%; top: 50%; transform: translateY(-50%); }
+.full-table tbody tr:hover td:nth-child(4) img { width: 16px; height: 16px; position: absolute; left: 29%; top: 50%; transform: translateY(-50%); }
+.full-table tbody tr td:nth-child(4) span { padding-left: 20%; }
+.full-table tbody tr td:nth-child(5) { width: 16%; }
+
+
+
+@media screen and (max-width: 1200px) {
+	.full-table tbody tr td:nth-child(4) span { padding-left: 30%; }
+}
+@media screen and (max-width: 666px) {
+	.full-table tbody tr td:nth-child(4) span { padding-left: 36%; }
+}
+@media screen and (max-height: 666px) {
+	.full-table thead th { line-height: 1.8rem; }
+}
+
+
