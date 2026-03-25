@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="renderer" content="webkit" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+		<title class="title">搜索框提示插件||输入框提示插件</title>
+		<!-- common -->
+		<!-- css -->
+		<link rel="stylesheet" type="text/css" href="../../../../css/layui.css" />
+		<!-- js -->
+		<script src="../../../../layui.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../../../../js/common.js"></script>
+	</head>
+	<body>
+		<div class="layui-container">
+			<!-- 导航条 -->
+			<div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+				<div class="layui-elem-quote yutons_nav">
+					<div>搜索框提示插件||输入框提示插件</div>
+				</div>
+			</div>
+			<!-- form表单 -->
+			<div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+				<form class="layui-form  yutons-form-view">
+					<div class="layui-form-item">
+						<label class="layui-form-label">姓名</label>
+						<div class="layui-input-block">
+							<input type="text" id="userName" name="userName" lay-verify="required" autocomplete="off" placeholder="请输入姓名"
+							 class="layui-input" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">工号</label>
+						<div class="layui-input-block">
+							<input type="text" id="userCode" name="userCode" lay-verify="required" autocomplete="off" placeholder="请输入工号"
+							 class="layui-input" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">部门</label>
+						<div class="layui-input-block">
+							<input type="text" id="ROLE_NAME" name="ROLE_NAME" lay-verify="required" autocomplete="off" placeholder="请输入部门"
+							 class="layui-input" />
+						</div>
+					</div>
+					<button class="layui-btn" lay-submit="" lay-filter="search">
+						<i class="layui-icon layui-icon-search"></i>
+					</button>
+				</form>
+			</div>
+		</div>
+		<script type="text/javascript">
+			//引入自定义插件
+			layui.config({
+				base: '../' //设置自定义插件路径:根据实际路径进行设置
+			}).use(["tableInput", "element", "jquery", "table", "form"], function() {
+				//创建tableInput搜索框提示插件||输入框提示插件实例
+				var tableInput = layui.tableInput;
+				let table = layui.table;
+				let form = layui.form;
+				let $ = layui.jquery;
+
+				sessionStorage.setItem("url", "json/table-input.json");
+				
+				tableInput.render({
+					id: "userName", //设置容器唯一id
+					// height: "167",
+					cols: [
+						[{
+							field: 'ROLE_ID',
+							title: 'ID'
+						}, {
+							field: 'ROLE_NAME',
+							title: '角色名'
+						}, {
+							field: 'ROLE_REMARK',
+							title: '备注'
+						}]
+					], //设置表头
+					params: [
+					{
+					    name: 'ROLE_ID',
+					    field: 'ROLE_ID'
+					}, {
+					    name: 'ROLE_NAME',
+					    field: 'ROLE_NAME'
+					}, {
+					    name: 'ROLE_REMARK',
+					    field: 'ROLE_REMARK'
+					}],//设置字段映射，适用于输入一个字段，回显多个字段
+					type: 'sugTable', //设置输入框提示类型：sug-下拉框，sugTable-下拉表格
+					where: {
+						USID: localStorage.getItem(g_accr_auth_usid),
+					},
+					url: g_req_url +"RoleMenuAuth/GetRoles"+ "?ROLE_NAME=" //设置异步数据接口,url为必填项,params为字段名
+				});
+
+				//初始化工号输入提示框
+				tableInput.render({
+					id: "userCode", //设置容器唯一id
+					height: "167",
+					cols: [
+						[{
+							field: 'userName',
+							title: '员工姓名'
+						}, {
+							field: 'userCode',
+							title: '员工工号'
+						}, {
+							field: 'deptName',
+							title: '所属部门'
+						}]
+					], //设置表头
+					type: 'sugTable', //设置输入框提示类型：sug-下拉框，sugTable-下拉表格
+					url: sessionStorage.getItem("url") + "?params=" //设置异步数据接口,url为必填项
+				});
+
+				//初始化部门输入提示框
+				tableInput.render({
+					id: "ROLE_NAME", //设置容器唯一id
+					type: 'sug', //设置输入框提示类型：sug-下拉框，sugTable-下拉表格
+						where: {
+							USID: localStorage.getItem(g_accr_auth_usid),
+						},
+					url: g_req_url +"RoleMenuAuth/GetRoles"+ "?ROLE_NAME=" //设置异步数据接口,url为必填项
+				});
+				
+				form.on("submit(search)", function (data) {
+					//获取当前数据表格条数
+					console.log($('#ROLE_NAME').val())
+					console.log($('#ROLE_NAME').attr("id"))
+					return false;
+				});
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,39 @@
+{
+    "code": 0,
+    "count": 4,
+    "data": [{
+            "CREATE_TIME": "2020-10-29 10:52:01",
+            "LAY_TABLE_INDEX": 0,
+            "LOGIN_NAME": "admin",
+            "ROLE_ID": 1,
+            "ROLE_NAME": "管理员",
+            "ROLE_REMARK": "ALL",
+            "ROLE_STATE": true
+        }, {
+            "CREATE_TIME": "2020-10-29 10:52:01",
+            "LAY_TABLE_INDEX": 1,
+            "LOGIN_NAME": "admin",
+            "ROLE_ID": 2,
+            "ROLE_NAME": "普通用户",
+            "ROLE_REMARK": "无系统管理权限",
+            "ROLE_STATE": true
+        }, {
+            "CREATE_TIME": "2020-10-29 10:59:17",
+            "LAY_TABLE_INDEX": 2,
+            "LOGIN_NAME": "admin",
+            "ROLE_ID": 3,
+            "ROLE_NAME": "TEST",
+            "ROLE_REMARK": "用于测试",
+            "ROLE_STATE": false
+        }, {
+            "CREATE_TIME": "2020-10-29 11:17:20",
+            "LAY_TABLE_INDEX": 3,
+            "LOGIN_NAME": "admin",
+            "ROLE_ID": 4,
+            "ROLE_NAME": "数据中心",
+            "ROLE_REMARK": "数据中心部门各员工的菜单权限",
+            "ROLE_STATE": true
+        }
+    ],
+    "msg": ""
+}

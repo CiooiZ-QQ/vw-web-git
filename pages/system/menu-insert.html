@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>添加菜单</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../css/oksub.css?v=2.6.1">
+		<style>
+			.location {
+				position: fixed;
+				right: 20px;
+				bottom: 2px;
+			}
+		</style>
+		<script type="text/javascript" src="../../lib/loading/okLoading.js?v=2.6.1"></script>
+	</head>
+	<body>
+		<div class="ok-body">
+			<!--form表单-->
+			<form class="layui-form layui-form-pane ok-form" lay-filter="filter">
+				<div class="layui-form-item">
+					<label class="layui-form-label">菜单标题</label>
+					<div class="layui-input-block">
+						<input type="text" id="MENU_TITLE" name="MENU_TITLE" placeholder="请输入菜单标题" autocomplete="off" class="layui-input" lay-verify="required|MENU_TITLE">
+						<input type="hidden" name="MENU_ID" />
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">菜单地址</label>
+					<div class="layui-input-block">
+						<input type="text" name="MENU_HREF" placeholder="请输入菜单地址" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">菜单样式</label>
+					<div class="layui-input-block">
+						<input type="text" name="MENU_FONTFAMILY" placeholder="请输入菜单样式" value="layui-icon" autocomplete="off" class="layui-input" lay-verify="required">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">图标(&#)</label>
+					<div class="layui-input-block">
+						<input type="text" name="MENU_ICON" placeholder="请输入菜单字体图标字符串&#后面的部分(比如:xe62e;)" value="xe62e;" autocomplete="off" class="layui-input" lay-verify="required">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">父级菜单ID</label>
+					<div class="layui-input-block">
+						<input type="text" name="P_MENU_ID" placeholder="请输入父级菜单ID(必须保证此ID有效)" autocomplete="off" class="layui-input" lay-verify="required|number">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">菜单顺序</label>
+					<div class="layui-input-block">
+						<input type="text" name="MENU_ORD" placeholder="请输入菜单顺序(注意是当前父级菜单下的顺序)" autocomplete="off" class="layui-input" lay-verify="required|number">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">是否展开</label>
+					<div class="layui-input-block">
+						<input type="checkbox" name="MENU_SPREAD" lay-filter="form-switch" lay-skin="switch" lay-text="ON|OFF">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">是否选中</label>
+					<div class="layui-input-block">
+						<input type="checkbox" name="MENU_ISCHECK" lay-filter="form-switch" lay-skin="switch" lay-text="ON|OFF">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">菜单状态</label>
+					<div class="layui-input-block">
+						<input type="checkbox" name="MENU_STATE" lay-filter="form-switch" lay-skin="switch" lay-text="启用|停用" checked>
+					</div>
+				</div>
+				<div class="layui-form-item location">
+					<div class="layui-input-block">
+						<button class="layui-btn" lay-submit lay-filter="add">立即提交</button>
+						<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!--js逻辑-->
+		<script src="../../lib/layui/layui.js?v=2.6.1"></script>
+		<script src="../../js/common.js?v=2.6.1"></script>
+		<script type="text/javascript">
+			let initDatas;
+			
+			function initForm(data) {
+				// console.log(data);
+				initDatas = JSON.parse(JSON.stringify(data));
+				// document.getElementById("MENU_TITLE").disabled = true;
+			};
+			
+			layui.use(["form", "tree", "okLayer", "okUtils"], function () {
+				var $ = layui.jquery;
+				let form = layui.form;
+				let tree = layui.tree;
+				let okLayer = layui.okLayer;
+				let okUtils = layui.okUtils;
+
+				okLoading.close();
+				if (typeof(initDatas) != "undefined") form.val("filter", initDatas);
+				
+				//数据校验
+				form.verify({
+					MENU_TITLE: function (value, item) {
+						// console.log(value, item);
+						if (value.length < 2 || value.length > 20) return "菜单标题的长度必须为2-20位！";
+						let result = "";
+						if (typeof(initDatas) == "undefined") {
+							okUtils.ajax(g_req_url +"RoleMenuAuth/CheckMenuName", "get", { menutitle: value }, true, false).done(function (response) {
+								if (response.data == "success") result = "该菜单标题已存在，请重新输入";
+							});
+							if (result != "") return result;
+						}
+					}
+				});
+				
+				//提交添加或编辑
+				form.on("submit(add)", function (data) {
+					
+					data.field.MENU_ICON = "&#" + data.field.MENU_ICON.replace("&#", "");
+					data.field.MENU_SPREAD = data.field.MENU_SPREAD ? 1 : 0;
+					data.field.MENU_ISCHECK = data.field.MENU_ISCHECK ? 1 : 0;
+					data.field.MENU_STATE = data.field.MENU_STATE ? 1 : 0;
+					// console.log(JSON.stringify(data.field));
+					okUtils.ajax(g_req_url + "RoleMenuAuth/" + (typeof(initDatas) == "undefined" ? "InsertMenu" : "UpdateMenu"), "post", JSON.stringify(data.field), true, true).done(function (response) {
+						// console.log(response);
+						if (response.data == "success") {
+							Print_Log("Menu Management","提交","提交编辑菜单信息");
+							parent.layer.close(parent.layer.getFrameIndex(window.name));
+						    parent.menuMsg(response, (typeof(initDatas) == "undefined" ? "添加" : "编辑"));
+							parent.haveRefresh = true;
+						} else if (response.msg != "") {
+							layer.msg(response.msg, {icon: 5});
+						}				
+					}).fail(function (error) {
+					   console.log(error)
+					});
+					return false;
+				});
+			})
+		</script>
+	</body>
+</html>

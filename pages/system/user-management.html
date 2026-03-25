@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>用户列表</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../css/oksub.css?v=2.6.1">
+		<style>
+			.maxSty {
+				height: 80px;
+				width: 100%;
+				float: left;
+				margin-top: -15px;
+				margin-bottom: -12px;
+			}
+
+			.maxSty_rowSty {
+				width: 250px;
+				float: left;
+				margin-right: 10px;
+				margin-top: 30px;
+			}
+
+			.maxSty_rowSty2 {
+				width: 60px;
+				float: left;
+				margin-top: 30px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="ok-body">
+			<!--模糊搜索区域-->
+			<div class="layui-row">
+				<form class="layui-form ok-search-form">
+					<div class="maxSty">
+						<div class="maxSty_rowSty">
+							<input type="text" class="layui-input" style="margin-right:0px;" placeholder="账号"
+								autocomplete="off" name="LOGIN_NAME"  data-i18n-placeholder="account">
+						</div>
+						<div class="maxSty_rowSty">
+							<select name="STATE" class="rowSty" lay-verify="" lay-search selected >
+								<option value=""  data-i18n-text="selectoption0" >请选择状态</option>
+								<option value="1" data-i18n-text="selectoption1">启用</option>
+								<option value="0" data-i18n-text="selectoption2">停用</option>
+							</select>
+						</div>
+						<div class="maxSty_rowSty2">
+							<button class="layui-btn" lay-submit="" lay-filter="search">
+								<i class="layui-icon">&#xe615;</i>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<!--数据表格-->
+			<table class="layui-hide" id="tableId" lay-filter="tableFilter"></table>
+		</div>
+		
+		<!--js逻辑-->
+		
+		<script type="text/javascript" src="../../lib/loading/okLoading.js?v=2.6.1"></script>
+		<script src="../../lib/jquery-1.12.4.min.js?v=2.6.1"></script> 
+		<script src="../../js/common.js?v=2.6.1"></script>
+		<script src="../../lib/layui/layui.js?v=2.6.1"></script>
+		<script src="../../js/i18n/jquery.i18n.properties.js?v=2.6.1"></script>
+		<script src="../../js/i18n/i18np.js?v=2.6.1"></script>
+		<!-- <script src="../../lib/layui-v2.6.8/layui/layui.js?v=2.6.1"></script> -->
+		<script>
+			g_initlang('../../'); //更新语言版本
+			
+			layui.use(["element", "jquery", "table", "form", "laydate", "okLayer", "okUtils", "okMock","i18np"], function() {
+				let table = layui.table;
+				let form = layui.form;
+				let i18np = layui.i18np;
+				let laydate = layui.laydate;
+				let okLayer = layui.okLayer;
+				let okUtils = layui.okUtils;
+				let okMock = layui.okMock;
+				let $ = layui.jquery;
+				i18np.loadProperties();
+				okLoading.close($);
+				laydate.render({
+					elem: "#updatetime",
+					type: "datetime"
+				});
+				
+							//console.log(777778, headers)
+				let userTable = table.render({
+					elem: '#tableId',
+					id: "userTable",
+					title: "User Management",
+					url: g_req_url + "System/UserSelect?USID="+localStorage.getItem(g_accr_auth_usid)+'&bol=false',  
+					page: true,
+					defaultToolbar: ['filter', 'exports', 'print'],
+					toolbar: true,
+					headers,
+					toolbar: '<div class="layui-btn-container"><button class="layui-btn layui-btn-sm" lay-event="add" >'+i18np.prop('addusers')+'</button></div>',
+					size: "sm",
+					limit: 20,
+					request: {
+						pageName: 'curr' //页码的参数名称，默认：page
+							,
+						limitName: 'nums' //每页数据量的参数名，默认：limit
+					},
+					height: 'full-78',
+					cols: [
+						[
+							//{ type: "checkbox", fixed: "left" },
+							{
+								field: "USID",
+								title: "ID",
+								width: 100,
+								hide: true
+							},
+							{
+								field: "NICK_NAME",
+								title:i18np.prop('niciname'),
+								width: 150,
+								align: 'center'
+							},
+							{
+								field: "LOGIN_NAME",
+								title: i18np.prop('op_account_number'),
+								width: 450,
+								align: 'center'
+							},
+							{
+								field: "ROLE_NAME",
+								title: i18np.prop('rolename'),
+								width: 150,
+								align: 'center'
+							},
+							// {
+							// 	field: "ROLE_ID",
+							// 	title: "角色",
+							// 	width: 150,
+							// 	align: 'center',
+							// 	hide: true
+							// },
+							{
+								field: "PASSWORD",
+								title: "Password",
+								width: 150,
+								align: 'center',
+								hide: true
+							},
+							{
+								field: "PHONE",
+								title: i18np.prop('phone'),
+								align: 'center',
+								width: 150,hide: true
+							},
+							{
+								field: "EMAIL",
+								title: i18np.prop('email'),
+								align: 'center',
+								width: 150,hide: true
+							},
+							{
+								field: "SEX",
+								title:  i18np.prop('sex'),
+								align: 'center',
+								width: 150,hide: true
+							},
+							{
+								field: "IMAGE",
+								title: i18np.prop('userimage'),
+								align: 'center',
+								templet:"#imgtp",
+								width: 150,hide: true
+							},
+							{
+								field: "CREATE_TIME",
+								width: 150,align: 'center',
+								title: i18np.prop('creationtime')
+							},
+							{
+								field: "UPDATE_TIME",
+								align: 'center',hide: true,
+								title:  i18np.prop('updatetime')
+								
+							},
+							{
+								field: "STATE",
+								title:i18np.prop('state'),
+								align: 'center',
+								width: 100,
+								templet: '<div>{{#  if(d.STATE == 1 ){}}<span class="layui-btn layui-btn-normal layui-btn-xs" >'+i18np.prop('selectoption1')+'</span>{{# } else if(d.STATE == 0) { }}<span class="layui-btn layui-btn-warm layui-btn-xs" >'+i18np.prop('selectoption2')+'</span>{{# } }}</div>'
+							},
+							{
+								title: i18np.prop('operation'),
+								width: 100,
+								align: "center",
+								fixed: "right",
+								templet: '<div><a href="javascript:" title="'+i18np.prop('redact')+'" lay-event="edit"><i class="layui-icon">&#xe642;</i></a><a href="javascript:" title="'+i18np.prop('delete')+'"  lay-event="del"><i class="layui-icon">&#xe640;</i></a></div>'
+							}
+						]
+					],
+					done: function(res) {
+						console.log(4044, res);
+									
+						hoverOpenImg();
+						//,templet:function(t){return(g_cdf_time(t.UPDATE_TIME))}
+						//,templet:function(t){return(g_cdf_time(t.CREATE_TIME))}
+						//$('#is_log_off',parent.document).val('flase');
+					},
+				});
+				
+				function hoverOpenImg(){
+					var img_show = null; // tips提示
+					$('td img').hover(function(){
+						//alert($(this).attr('src'));
+						var img = "<img class='img_msg' src='"+$(this).attr('src')+"' style='width:130px;' />";
+						img_show = layer.tips(img, this,{
+							tips:[2,'rgba(194, 198, 200, 1.0)']
+							,area: ['160px'],time:10000
+						});
+					},function(){
+						layer.close(img_show);
+					});
+					$('td img').attr('style','max-width:70px');
+				}
+							
+				//Print_Log("User Management","查询","查询用户信息");
+				//接口异常，回到首页
+				$(".ok-body").on('DOMNodeInserted', '.layui-none', function(e) {
+					if ($(this).text().indexOf('异常') != -1) {
+						parent.log_off();
+					};
+
+				});
+				
+				//搜索
+				form.on("submit(search)", function(data) {
+					Print_Log("User Management","搜索","搜索用户信息");
+					//获取当前数据表格条数
+					var nums = $(".layui-laypage-limits").find("option:selected").val();
+					var jsons = {
+						LOGIN_NAME: data.field.LOGIN_NAME,
+						STATE: data.field.STATE,
+						nums: nums
+					};
+
+					table.reload('userTable', {
+						url: g_req_url + "System/UserSelect?USID="+localStorage.getItem(g_accr_auth_usid)+'&bol=false',  
+						method: 'get',
+						headers,
+						page: {
+							curr: 1
+						},
+						where: jsons
+
+					}, 'data');
+
+					return false;
+				});
+				table.on("toolbar(tableFilter)", function(obj) {
+					switch (obj.event) {
+						case "batchDel":
+							batchDel();
+							break;
+						case "add":
+							add();
+							break;
+							case "LAYTABLE_PRINT":
+							Print_Log("User Management","打印","打印用户信息");
+							break;
+					}
+				});
+	
+			
+				table.on("tool(tableFilter)", function(obj) {
+				
+					let data = obj.data;
+					switch (obj.event) {
+						case "edit":
+							edit(data);
+							break;
+						case "del":
+							del(data.USID);
+							break;
+					}
+				});
+
+				function batchDel() {
+					okLayer.confirm("确定要批量删除吗？", function(index) {
+						layer.close(index);
+						let idsStr = okUtils.tableBatchCheck(table);
+						if (idsStr) {
+							okUtils.ajax(g_req_url + "System/UserBatchDel", "post", JSON.stringify({
+								idsStr: idsStr
+							}), true, true).done(function(response) {
+								if (response.success == "ok") {
+									success("批量删除")
+								} else {
+									errors("批量删除")
+								}
+								$(".layui-laypage-btn").click()
+							}).fail(function(error) {
+								console.log(error)
+							});
+						}
+					});
+				}
+				function add() {
+					okLayer.open(i18np.prop('addusers'), "user-insert.html", "60%", "70%", null, function() {
+						Print_Log("User Management","添加","添加用户信息");
+						if (haveRefresh) {
+							userTable.reload();
+							haveRefresh = false;
+						
+						}
+					})
+				}
+
+				function edit(data) {
+					okLayer.open(i18np.prop('updusers'), "user-insert.html", "60%", "70%", function(layero) {
+						Print_Log("User Management","编辑","编辑用户信息");
+						let iframeWin = window[layero.find("iframe")[0]["name"]];
+						console.log('编辑用户信息',data);
+					    iframeWin.initForm(data);
+					}, function() {
+						if (haveRefresh) {
+							
+							userTable.reload();
+						
+							haveRefresh = false;
+						}
+					})
+				}
+
+				function del(id) {
+					
+					okLayer.confirm("确定要删除吗？", function() {
+						Print_Log("User Management","删除","删除用户信息");
+						okUtils.ajax(g_req_url + "System/UserDel", "post", JSON.stringify({
+							USID: id
+						}), true, true).done(function(response) {
+							if (response.success == "ok") {
+								success("删除")
+								
+							} else {
+								errors("删除")
+							}
+							layer.close(layer.index);
+
+							$(".layui-laypage-btn").click()
+						}).fail(function(error) {
+							console.log(error)
+						});
+					})
+				}
+			})
+			function success(data) {
+			    layui.use(["okLayx"], function () {
+			    let okLayx = layui.okLayx;
+			    okLayx.notice({
+			        title: "成功提示",
+			        type: "success",
+			        message: data+"用户信息成功！"
+			        });
+			    });
+			}
+			function errors(data) {
+			    layui.use(["okLayx"], function () {
+			        let okLayx = layui.okLayx;
+			        okLayx.notice({
+			            title: "错误提示",
+			            type: "error",
+			            message: data+"用户信息失败！"
+			        });
+			    });
+			}
+		</script>
+		<script type="text/html" id="imgtp">
+		{{#  if(d.IMAGE.length > 300 ){}}
+			<img src="{{d.IMAGE}}" style="width: 50;height: 50;"/>
+				{{# } else if(d.STATE < 300) { }}
+				<img src="{{'../../'+d.IMAGE}}" style="width: 50;height: 50;" onerror="this.src='../../images/login.png'"/>
+					{{# } }}
+		</script>
+		<!-- 头工具栏模板 -->
+
+		<!-- 行工具栏模板 -->
+		<!-- <script type="text/html" id="operationTpl">
+			<a href="javascript:" title='编辑' lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
+			<a href="javascript:" title="删除"  lay-event="del"><i class="layui-icon">&#xe640;</i></a>
+		</script> -->
+		
+		 <script type="text/html" id="statusTpl">
+		
+		{{#  if(d.STATE == 1 ){}}
+			<span class="layui-btn layui-btn-normal layui-btn-xs" >启用</span>
+			{{# } else if(d.STATE == 0) { }}
+				<span class="layui-btn layui-btn-warm layui-btn-xs" >停用</span>
+				{{# } }}
+		</script> 
+	</body>
+</html>
+
+<script>
+	var haveRefresh = false;
+
+	function roleMsg(response, type) {
+
+		layui.use(["okLayx"], function() {
+			let okLayx = layui.okLayx;
+			okLayx.notice({
+				title: (type == "ok" ? "成功" : "错误") + "提示",
+				type: (type == "ok" ? "success" : "error"),
+				message: response + (type == "ok" ? "成功" : "失败")
+			});
+		});
+	}
+</script>

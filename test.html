@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		
+		<link rel="stylesheet" href="css/iconfont/iconfont.css?v=2.6.1">
+		<link rel="stylesheet" href="css/iconfont-new/iconfont.css?v=2.6.1">
+		<link rel="stylesheet" href="lib/layui/css/layui.css?v=2.6.1">
+		<link rel="stylesheet" href="css/global.css?v=2.6.1">
+		<style>
+			#canvas1, #canvas2 { border: 1px solid black; }
+			.local_excel { width: 250px; height: 50px; z-index: 998; background-color: #66707c; color: #fff; cursor: pointer; }
+			#status { width: 100%; height: 200px; background-color: #f4f5f6; }
+			#tabdata { width: 100%; height: auto; background-color: #ccc; }
+		</style>
+	</head>
+	<body>
+		<!-- <canvas id="canvas1" width="500" height="500"></canvas>
+		<canvas id="canvas2" width="500" height="500"></canvas> -->
+		<div style="position: sticky; top: 0; ">
+			<div style="background-color: #f4f5f6;"><i class="icon iconfont icon-qiche local_excel" >选择本地Excel文件
+				<input type="file" onchange="getlocalExcelData(event, this)" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+				style="position: absolute; top: 0; left: 0; height: 100%; width: calc(100% + 100px); margin-left: -100px; opacity: 0; z-index: 998; font-size: 0; cursor: pointer;" title="Local Custom Version" />
+			</i></div>
+			<div id="status"></div>
+		</div>
+		<table id="tabdata"></table>
+		<script src="lib/jquery/jquery-3.3.1.min.js?v=2.6.1"></script>
+		<script src="lib/layui-v2.6.8/layui/layui.js?v=2.6.1"></script>
+		<script src="lib/vue/axios.min.js?v=2.6.1"></script>
+		<script src="lib/excel/xlsx.full.min.js?v=2.6.1"></script>
+		<script src="js/common.js?v=2.6.1"></script>
+		<script src="js/global.js?v=2.6.1"></script>
+		<script>
+			
+			function getlocalExcelData(event, that = null) {
+				document.querySelector('#status').innerHTML = `<p>开始获取Excel数据 - ${(new Date()).Format('yyyyMMddHHmmss')}</p>`;
+				var file = event.target.files[0];
+				var reader = new FileReader();
+				reader.onload = function(event) {
+					var data = new Uint8Array(event.target.result);
+					var workbook = XLSX.read(data, {type: 'array'});
+					var sheetName = workbook.SheetNames[0];
+					var worksheet = workbook.Sheets[sheetName];
+					var excelData = XLSX.utils.sheet_to_json(worksheet, {header:1});
+					// console.log('Excel数据：', sheetName, excelData);
+					document.querySelector('#status').innerHTML += `<p>成功获取Excel数据 - ${(new Date()).Format('yyyyMMddHHmmss')}</p>`;
+					dowebsql(excelData);
+					if (that != null) $(that).val(null);
+					event.target.value = ''; 
+				};
+				reader.readAsArrayBuffer(file);
+			}
+			
+			function dowebsql(data){
+				document.querySelector('#status').innerHTML += `<p>开始创建数据库 - ${(new Date()).Format('yyyyMMddHHmmss')}</p>`;
+				var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024 * 1024);
+				document.querySelector('#status').innerHTML += `<p>成功创建数据库 - ${(new Date()).Format('yyyyMMddHHmmss')}</p>`;
+				db.transaction(function(tx) {
+					tx.executeSql('DROP TABLE T_CAR_VSN', [], function(tx, results) {
+						document.querySelector('#status').innerHTML += `<p>成功删除表格 - ${(new Date()).Format('yyyyMMddHHmmss')}</p>`;
+					}, null);
+				});
+				db.transaction(function(tx) {
+					var fields = '';
+					for (var i = 0; i < data[0].length; i++) {
+						fields += ', ' + data[0][i];
+					}
+					tx.executeSql('CREATE TABLE IF NOT EXISTS T_CAR_VSN (id unique' + fields + ')', [], function(tx, results) {
+						document.querySelector('#status').innerHTML += `<p>成功创建表格 - ${(new Date()).Format('yyyyMMddHHmmss')}</p>`;
+					}, null);
+					var maxrows = data.length, insertnum = 0;
+					data.forEach(function(a,i){
+						if (i > 0) {
+							let values = '';
+							a.forEach(function(b){
+								values += ', "' + b + '"';
+							});
+							tx.executeSql(`INSERT INTO T_CAR_VSN (id${fields}) VALUES (${i}${values})`,[],function(a,b){
+								// console.log('INSERT table success', i);
+								insertnum++;
+								if (i == maxrows - 1) document.querySelector('#status').innerHTML += `<p>成功将Excel数据插入表格【${insertnum}行${data[0].length}列】 - ${(new Date()).Format('yyyyMMddHHmmss')}</p>`;
+							}, function(obj){ console.log('INSERT table error', i, obj); });
+							// if (i == maxrows - 1) document.querySelector('#status').innerHTML += `<p>成功将Excel数据插入表格【${maxrows - errornum - 1}行${data[0].length}列】 - ${(new Date()).Format('yyyyMMddHHmmss')}</p>`;
+						}
+					});
+					tx.executeSql('CREATE INDEX T_CAR_VSN_XXX ON T_CAR_VSN(id)');
+					document.querySelector('#status').innerHTML += `<p>成功创建表格索引 - ${(new Date()).Format('yyyyMMddHHmmss')}</p>`;
+				});
+				db.transaction(function(tx) {
+					var topnum = 1000;
+					tx.executeSql('SELECT * FROM T_CAR_VSN WHERE id<=' + topnum, [], function(tx, results) {
+						document.querySelector('#status').innerHTML += `<p>成功查询表格数据（TOP ${topnum}） - ${(new Date()).Format('yyyyMMddHHmmss')}</p>`;
+						var len = results.rows.length;
+						for (var i = 0; i < len; i++) {
+							// document.querySelector('#tabdata').innerHTML += "<tr><td>" + results.rows.item(i).VSN_ID + ' - ' + results.rows.item(i).VSN + "</td></tr>";
+							document.querySelector('#tabdata').innerHTML += "<tr><td>" + results.rows.item(i).SITENAME + ' - ' + results.rows.item(i).ARTICLE_TITLE + "</td></tr>";
+						}
+						document.querySelector('#status').innerHTML += `<p>成功绑定表格数据（TOP ${topnum}） - ${(new Date()).Format('yyyyMMddHHmmss')}</p>`;
+					}, function(obj){
+						console.log('zzzzzzzzzz',obj);
+					});
+				});
+				
+			}
+			
+		</script>
+		<!-- <script>
+        window.addEventListener('load', () => {
+            const canvas = document.getElementById('canvas1');
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isDrawing) return;
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            });
+
+            canvas.addEventListener('mouseup', () => {
+                isDrawing = false;
+            });
+        });
+    </script> -->
+		<!-- <script>
+		var canvas2 = document.getElementById("canvas2");
+		var ctx2 = canvas2.getContext("2d");
+		var startPoint = {x: 0, y: 0}; // 起点初始位置为(0, 0)
+		
+		canvas2.addEventListener("mousedown", function(event) {
+		  startPoint.x = event.clientX;
+		  startPoint.y = event.clientY;
+		});
+		
+		canvas2.addEventListener("mousemove", function(event) {
+		  var endPoint = {x: event.clientX, y: event.clientY};
+		
+		  // 清空画布
+		  ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+		
+		  // 绘制起点到终点的连线
+		  ctx2.beginPath();
+		  ctx2.moveTo(startPoint.x, startPoint.y);
+		  ctx2.lineTo(endPoint.x, endPoint.y);
+		  ctx2.stroke();
+		});
+	</script> -->
+	</body>
+</html>

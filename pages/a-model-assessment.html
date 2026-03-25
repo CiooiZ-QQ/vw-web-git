@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" class="page-fill">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="keywords" content="New Model Assessment Tool">
+		<meta name="description" content="">
+		<title>New Model Assessment Tool</title>
+		<link rel="shortcut icon" href="../images/favicon1.png?v=2.6.1" type="image/x-icon" />
+		<link rel="stylesheet" href="../lib/layui-v2.6.8/layui/css/layui.css?v=2.6.1">
+		<link rel="stylesheet" href="../lib/bootstrap-4.1.3/css/bootstrap.min.css?v=2.6.1">
+		<link rel="stylesheet" href="../lib/aos/aos.css?v=2.6.1">
+		<link rel="stylesheet" href="../css/iconfont/iconfont.css?v=2.6.1">
+		<link rel="stylesheet" href="../css/iconfont-new/iconfont.css?v=2.6.1">
+		<link rel="stylesheet" href="../css/global.css?v=2.6.1">
+		<link rel="stylesheet" href="../css/a-model-assessment.css?v=2.6.1">
+		<script type="text/javascript" src="../lib/layui-v2.6.8/layui/layui.js?v=2.6.1"></script>
+		<script type="text/javascript" src="../lib/jquery/jquery-3.3.1.min.js?v=2.6.1"></script>
+		<script type="text/javascript" src="../lib/vue/axios.min.js?v=2.6.1"></script>
+		<script type="text/javascript" src="../js/common.js?v=2.6.1"></script>
+		<script type="text/javascript" src="../js/global.js?v=2.6.1"></script>
+		<script type="text/javascript">
+			axios_F1('Common/CheckToken').then(response=>{ setTimeout(function(){ Print_Log("New Model Asmt.", "新车评估工具", "Loading"); }); }); //通过接口验证是否处于合法登录状态并添加日志
+		</script>
+	</head>
+	<body class="body-set1">
+		<div class="layui-row">
+			<div class="layui-col-xs12 layui-col-sm12">
+				<div class="first-card">
+					<h3 class="menu-title" style="">New Model Assessment Tool</h3>
+				</div>
+				<div class="filter-card">
+					<div>
+						<span class="selectdown"><select id="select-segment"></select></span>
+						<span class="selectdown"><select id="select-bodytype"></select></span>
+						<span class="selectdown"><select id="select-fueltype"></select></span>
+						<span class="selectdown"><select id="select-year2"></select></span>
+					</div>
+					<div id="select-year"></div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row" style="display: flex; flex-wrap: wrap; align-items: center;">
+			<div class="layui-col-xs12 layui-col-sm12 layui-col-md7">
+				<div class="set-card content-card">
+					<div class="content-top"><p class="text-shadow-def">Key Factors of Competitiveness</p></div>
+					<div class="content-filter">
+						<div>
+							<span class="selectdown"><select id="select-brands"></select></span>
+							<span class="selectdown"><select id="select-models"></select></span>
+						</div>
+						<img id="reset_score" src="../img/reset.png" alt="" title="reset" />
+					</div>
+					<div class="content-main">
+						<div class="content-main-item">
+							<div class="content-main-item-top">
+								<div class="content-main-item-title" >
+									<img src="../img/brand-big.png" alt="" />
+									<span>Brand : </span>
+								</div>
+							</div>
+							<div class="content-main-item-list" data-type="brand">
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+							</div>
+						</div>
+						<div class="content-main-item" style="margin-left: 6%;">
+							<div class="content-main-item-top">
+								<div class="content-main-item-title" >
+									<img src="../img/price-big.png" alt="" style="padding: 5.4px 6px;" />
+									<span>Price : </span>
+								</div>
+							</div>
+							<div class="content-main-item-list" data-type="price">
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+							</div>
+						</div>
+						<div class="content-main-item" style="width: 100%;">
+							<div class="content-main-item-top" style="border-bottom: 1px solid #00AFEF; color: #00AFEF;">
+								<div class="content-main-item-title" style="border-bottom: 1px solid #00AFEF;">
+									<img src="../img/product-big.png" alt="" style="padding: 6px 12px;" />
+									<span>Product : </span>
+								</div>
+							</div>
+							<div class="content-main-item-list" data-type="product">
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+							</div>
+						</div>
+						<div class="content-main-item">
+							<div class="content-main-item-top">
+								<div class="content-main-item-title" >
+									<img src="../img/service-big.png" alt="" style="padding: 6px 12px;" />
+									<span>Service : </span>
+								</div>
+							</div>
+							<div class="content-main-item-list" data-type="service">
+								<p data-id="0"><span>&nbsp;</span><input type="text" value="" /></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-sm12 layui-col-md1 refresh-col">
+				<div class="refresh-div" data-aos="flip-left">
+					<img class="refresh-img" src="../img/refresh.png" alt="">
+					<!-- <img class="refresh-img" src="../img/refresh-right.png" alt="">
+					<i class="refresh-i" class="icon iconfont-cz icon-shuaxin"></i> -->
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-sm12 layui-col-md4">
+				<div class="set-card content-card" style="display: flex;">
+					<div class="content-top"><p class="text-shadow-def">Competitiveness Forecasting</p></div>
+					<div class="content-score">
+						<div class="content-score-row">
+							<span><img src="../img/brand-smail.png" alt="" /><label>Brand Competitiveness</label></span>
+							<span id="score_brand"><label>0.00</label></span>
+						</div>
+						<div class="content-score-row">
+							<span><img src="../img/price-smail.png" alt="" /><label>Price Competitiveness</label></span>
+							<span id="score_price"><label>0.00</label></span>
+						</div>
+						<div class="content-score-row">
+							<span><img src="../img/product-smail.png" alt="" style="padding: 5px 12px;" /><label>Product Competitiveness</label></span>
+							<span id="score_product"><label>0.00</label></span>
+						</div>
+						<div class="content-score-row">
+							<span><img src="../img/service-smail.png" alt="" style="padding: 6px 14px;" /><label>Service Competitiveness</label></span>
+							<span id="score_service"><label>0.00</label></span>
+						</div>
+						<div class="content-score-row">
+							<span><img src="../img/car.png" alt="" style="padding: 9px 7px;" /><label>Comprehensive Competitiveness</label></span>
+							<span id="score_sum"><label>0.00</label></span> <!-- contenteditable="true" -->
+						</div>
+					</div>
+					<div class="content-table" style="flex-grow: 1;">
+						<table class="full-table" id="table_rank">
+							<thead>
+								<th>NO.</th>
+								<th>Model</th>
+								<th style="line-height: 16px;">Competiti<br>veness</th>
+								<th style="line-height: 16px;">MS</th>
+							</thead>
+							<tbody>
+								<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</tr>
+								<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</tr>
+								<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</tr>
+								<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</tr>
+								<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</tr>
+								<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</tr>
+								<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</tr>
+								<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</tr>
+								<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</tr>
+								<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</tr>
+								<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="../lib/bootstrap-4.1.3/js/bootstrap.bundle.js?v=2.6.1"></script>
+		<script type="text/javascript" src="../lib/aos/aos.js?v=2.6.1"></script>
+		<script type="text/javascript">
+			!(function($) {
+				"use strict";
+				AOS.init({
+					duration: 1000, //定义动画持续时间（以毫秒为单位）
+					once: true, //定义元素是否只执行一次动画
+					offset: 20, //定义元素距离视窗底部的偏移量（默认200）
+					easing: "ease-in-out-back"
+				});
+			})(jQuery);
+		</script>
+		<script type="text/javascript" src="../js/a-model-assessment.js?v=2.6.1"></script>
+		<script type="text/javascript">
+			
+		</script>
+	</body>
+</html>

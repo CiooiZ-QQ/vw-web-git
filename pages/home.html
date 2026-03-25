@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" class="page-fill">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="keywords" content="Home">
+		<meta name="description" content="">
+		<title>Home</title>
+		<link rel="stylesheet" href="../lib/layui-v2.6.8/layui/css/layui.css?v=2.6.1">
+		<link rel="stylesheet" href="../css/font-awesome.css?v=2.6.1">
+		<link rel="stylesheet" href="../css/iconfont/iconfont.css?v=2.6.1">
+		<link rel="stylesheet" href="../css/global.css?v=2.6.1">
+		<link rel="stylesheet" href="../css/home.css?v=2.6.1">
+		<script type="text/javascript" src="../lib/layui-v2.6.8/layui/layui.js?v=2.6.1"></script>
+		<script type="text/javascript" src="../lib/jquery/jquery-3.3.1.min.js?v=2.6.1"></script>
+		<script type="text/javascript" src="../lib/jquery/jquery.waypoints.min.js?v=2.6.1"></script><!-- 数字动画 -->
+		<script type="text/javascript" src="../lib/jquery/jquery.countup.min.js?v=2.6.1"></script><!-- 数字动画 -->
+		<script type="text/javascript" src="../lib/vue/axios.min.js?v=2.6.1"></script>
+		<script type="text/javascript" src="../js/common.js?v=2.6.1"></script>
+		<script type="text/javascript" src="../js/global.js?v=2.6.1"></script>
+		<script type="text/javascript">
+			// axios_F1('Common/CheckToken').then(response=>{ setTimeout(function(){ Print_Log("Home", "首页", "Loading"); }); }); //通过接口验证是否处于合法登录状态并添加日志
+		</script>
+	</head>
+	<body class="body-set1">
+		<div class="layui-row">
+			<div class="layui-col-xs12 layui-col-sm12">
+				<div class="first-card">
+					<h3 class="menu-title" style="">NEV市场概览</h3>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row" id="seg-list">
+			<div class="select-card"><div class="set-card"><h4>A NB BEV</h4><h2>0 K</h2><span class="percent-rise">&nbsp;</span></div></div>
+			<div class="select-card"><div class="set-card"><h4>A NB PHEV</h4><h2>0 K</h2><span class="percent-rise">&nbsp;</span></div></div>
+			<div class="select-card"><div class="set-card"><h4>A SUV BEV</h4><h2>0 K</h2><span class="percent-rise">&nbsp;</span></div></div>
+			<div class="select-card"><div class="set-card"><h4>A SUV PHEV</h4><h2>0 K</h2><span class="percent-rise">&nbsp;</span></div></div>
+			<div class="select-card"><div class="set-card"><h4>B NB BEV</h4><h2>0 K</h2><span class="percent-rise">&nbsp;</span></div></div>
+			<div class="select-card"><div class="set-card"><h4>B NB PHEV</h4><h2>0 K</h2><span class="percent-rise">&nbsp;</span></div></div>
+			<div class="select-card"><div class="set-card"><h4>B SUV BEV</h4><h2>0 K</h2><span class="percent-rise">&nbsp;</span></div></div>
+			<div class="select-card"><div class="set-card"><h4>B SUV PHEV</h4><h2>0 K</h2><span class="percent-rise">&nbsp;</span></div></div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-xs12 layui-col-sm12 layui-col-md6">
+				<div class="set-card content-card">
+					<div class="full-div" id="echart_bar"></div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-sm12 layui-col-md6">
+				<div class="set-card content-card">
+					<table class="full-table" id="table_rank">
+						<thead>
+							<th width="8%">NO.</th>
+							<th colspan="2">Sales Volume (Unit: K)</th>
+							<th width="24%">&nbsp;</th>
+							<th width="16%">&nbsp;</th>
+						</thead>
+						<tbody>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="https://pv.sohu.com/cityjson?ie=utf-8"></script><!-- 用于获取IP地址 -->
+		<script type="text/javascript" src="../lib/echarts5/echarts.min.js?v=2.6.1"></script>
+		<script type="text/javascript" src="../js/set_echarts.js?v=2.6.1"></script>
+		<script type="text/javascript" src="../js/home.js?v=2.6.1"></script>
+		<script type="text/javascript">
+			// console.log('returnCitySN',returnCitySN.cip); //用于获取IP地址，来源https://pv.sohu.com/cityjson?ie=utf-8
+			if (returnCitySN != null || returnCitySN != undefined) localStorage.setItem(g_accr_log_ip, returnCitySN.cip);
+			
+		</script>
+	</body>
+</html>

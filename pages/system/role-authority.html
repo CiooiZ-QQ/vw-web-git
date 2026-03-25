@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>角色权限</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../css/oksub.css?v=2.6.1">
+		<script type="text/javascript" src="../../lib/loading/okLoading.js?v=2.6.1"></script>
+	</head>
+	<body>
+		<div class="ok-body">
+			<!--模糊搜索区域-->
+			<div class="layui-row">
+				<form class="layui-form layui-col-md12 ok-search">
+					<!-- <input class="layui-input" placeholder="开始日期" autocomplete="off" id="startTime" name="begindate">
+			<input class="layui-input" placeholder="截止日期" autocomplete="off" id="endTime" name="enddate"> -->
+					<input class="layui-input" placeholder="角色名称" autocomplete="off" name="ROLE_NAME"
+						data-i18n-placeholder="rolename">
+					<button class="layui-btn" lay-submit="" lay-filter="search">
+						<i class="layui-icon layui-icon-search"></i>
+					</button>
+				</form>
+			</div>
+
+			<!--数据表格-->
+			<table class="layui-hide" id="tableId" lay-filter="tableFilter"></table>
+
+		</div>
+		<!--js逻辑-->
+		<script src="../../lib/layui/layui.js?v=2.6.1"></script>
+		<script src="../../js/common.js?v=2.6.1"></script>
+		<script src="../../lib/jquery/jquery-3.3.1.min.js?v=2.6.1"></script>
+		<script src="../../js/i18n/jquery.i18n.properties.js?v=2.6.1"></script>
+		<script src="../../js/i18n/i18np.js?v=2.6.1"></script>
+		<script>
+			layui.use(["element", "jquery", "table", "form", "laydate", "okLayer", "okUtils", "okMock", "okLayx", "i18np"],
+				function() {
+					let table = layui.table;
+					let form = layui.form;
+					let laydate = layui.laydate;
+					let i18np = layui.i18np;
+					let okLayer = layui.okLayer;
+					let okUtils = layui.okUtils;
+					let okMock = layui.okMock;
+					let okLayx = layui.okLayx;
+					let $ = layui.jquery;
+					i18np.loadProperties();
+					okLoading.close($);
+
+
+					// laydate.render({elem: "#startTime", type: "datetime"});
+					// laydate.render({elem: "#endTime", type: "datetime"});
+
+					let roleTable = table.render({
+						elem: "#tableId",
+						id: "roleTable",
+						title: "Role Authority",
+						headers,
+						url: g_req_url + "RoleMenuAuth/GetRoles",
+						where: {
+							USID: localStorage.getItem(g_accr_auth_usid),
+						},
+						size: "sm",
+						page: true,
+						limits: [10, 20, 50, 100],
+						limit: 20,
+						toolbar: true,
+						toolbar: '<div class="layui-btn-container"><button class="layui-btn layui-btn-sm" lay-event="add">'+i18np.prop('addingroles')+'</button></div>',
+						defaultToolbar: ['filter', 'exports', 'print'],
+						skin: 'row',
+						even: true, //表格风格 隔行背景
+						request: { //用于实现后台分页
+							pageName: 'pageIndex' //页码的参数名称，默认：page
+								,
+							limitName: 'pageSize' //每页数据量的参数名，默认：limit
+						},
+						height: 'full-78',
+						cols: [
+							[{
+									type: "checkbox",
+									fixed: "left"
+								},
+								{
+									field: "ROLE_ID",
+									title: "ID",
+									sort: true,
+									width: 100
+								},
+								{
+									field: "ROLE_NAME",
+									title: i18np.prop('rolename'),
+									sort: true,
+									width: 250
+								}, {
+									field: "ROLE_REMARK",
+									title: i18np.prop('remarks'),
+									sort: true
+								},
+								{
+									field: "LOGIN_NAME",
+									title: i18np.prop('creator'),
+									sort: true,
+									width: 150
+								},
+								{
+									field: "CREATE_TIME",
+									title: i18np.prop('creationtime'),
+									sort: true,
+									width: 150
+								},
+								{
+									field: "ROLE_STATE",
+									title: i18np.prop('state'),
+									width: 80,
+									align: "center",
+									templet: '<div>{{# if(d.ROLE_STATE == 1){ }}<span class="layui-btn layui-btn-normal layui-btn-xs">'+i18np.prop('selectoption1')+'</span>{{# } else if(d.ROLE_STATE == 0) { }}<span class="layui-btn layui-btn-warm layui-btn-xs">'+i18np.prop('selectoption2')+'</span>{{# } }}</div>'
+								},
+								{
+									title: i18np.prop('operation'),
+									width: 80,
+									align: "center",
+									fixed: "right",
+									templet: '<div><a href="javascript:" title='+i18np.prop('redact')+' lay-event="edit"><i class="layui-icon">&#xe642;</i></a><a href="javascript:" title="'+i18np.prop('delete')+'" lay-event="del"><i class="layui-icon">&#xe640;</i></a></div>'
+								}
+							]
+						],
+						done: function(res, curr, count) {
+							console.log(res)
+						}
+					});
+
+					//Print_Log("Role Authority", "查询", "查询角色信息");
+					form.on("submit(search)", function(data) {
+						data.field.USID=localStorage.getItem(g_accr_auth_usid);
+						//获取当前数据表格条数
+						data.field.pageSize = $(".layui-laypage-limits").find("option:selected").val();
+						// console.log(data.field);
+						roleTable.reload({
+							url: g_req_url + "RoleMenuAuth/GetRoles",
+							method: 'get',
+							headers,
+							page: {
+								curr: 1
+							},
+							where: data.field
+						});
+						return false;
+					});
+
+					table.on("toolbar(tableFilter)", function(obj) {
+						let data = obj.data;
+						console.log('add', data)
+						switch (obj.event) {
+							case "add":
+								add();
+								break;
+							case "LAYTABLE_PRINT":
+								Print_Log("Role Authority", "打印", "打印角色信息");
+								break;
+								// case "batchDel":
+								// 	batchDel();
+								// 	break;
+						}
+					});
+
+					table.on("tool(tableFilter)", function(obj) {
+						let data = obj.data;
+						switch (obj.event) {
+							case "edit":
+								edit(data);
+								break;
+							case "del":
+								del(data.ROLE_ID);
+								break;
+						}
+					});
+
+					function add() {
+						okLayer.open(i18np.prop('addingroles'), "role-insert.html", "35%", "80%", null, function() {
+							Print_Log("Role Authority", "添加", "添加角色信息");
+							if (haveRefresh) {
+								roleTable.reload();
+								haveRefresh = false;
+							}
+						})
+					}
+
+					// function batchDel() {
+					// 	okLayer.confirm("确定要批量删除吗？", function (index) {
+					// 		layer.close(index);
+					// 		let idsStr = okUtils.tableBatchCheck(table);
+					// 		if (idsStr) {
+					// 			okUtils.ajax("/role/deleteRole", "delete", {idsStr: idsStr}, true).done(function (response) {
+					// 				okUtils.tableSuccessMsg(response.msg);
+					// 			}).fail(function (error) {
+					// 				console.log(error)
+					// 			});
+					// 		}
+					// 	});
+					// }
+
+					function edit(data) {
+						okLayer.open(i18np.prop('addingroles'), "role-insert.html", "35%", "80%", function(layero) {
+							Print_Log("Role Authority", "编辑", "编辑角色信息");
+							let iframeWin = window[layero.find("iframe")[0]["name"]];
+							console.log('编辑角色信息',data);
+							iframeWin.initForm(data);
+						}, function() {
+							if (haveRefresh) {
+								roleTable.reload();
+								haveRefresh = false;
+
+							}
+						})
+					}
+
+					function del(id) {
+						okLayer.confirm("确定要删除吗？", function() {
+							okUtils.ajax(g_req_url + "RoleMenuAuth/DeleteRole", "post", JSON.stringify({
+								roleid: id
+							}), true, true).done(function(response) {
+								Print_Log("Role Authority", "删除", "删除角色信息");
+								roleMsg(response, "删除");
+								layer.close(layer.index);
+								$(".layui-laypage-btn").click(); //刷新
+							}).fail(function(error) {
+								console.log(error)
+							});
+						})
+					}
+				})
+		</script>
+		<!-- 头工具栏模板 -->
+		<!-- <script type="text/html" id="toolbarTpl">
+			<div class="layui-btn-container">
+				<button class="layui-btn layui-btn-sm" lay-event="add">添加角色</button>
+				 <div title="添加角色" class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div> 
+				<div title="批量删除角色" class="layui-inline" lay-event="batchDel"><i class="layui-icon layui-icon-delete"></i></div> 
+			</div>
+		</script> -->
+		<!-- 行工具栏模板 -->
+		<!-- <script type="text/html" id="statusTpl">
+		{{# if(d.ROLE_STATE == 1){ }}
+			<span class="layui-btn layui-btn-normal layui-btn-xs">启用</span>
+			{{# } else if(d.ROLE_STATE == 0) { }}
+				<span class="layui-btn layui-btn-warm layui-btn-xs">停用</span>
+				{{# } }}
+		</script> -->
+
+		<!-- <script type="text/html" id="operationTpl">
+			<a href="javascript:" title="编辑" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
+			<a href="javascript:" title="删除" lay-event="del"><i class="layui-icon">&#xe640;</i></a>
+		</script> -->
+	</body>
+</html>
+<script type="text/javascript">
+	//放到此处是为了方便子页面调用
+	var haveRefresh = false;
+
+	function roleMsg(response, reqtype) {
+		layui.use(["okLayx"], function() {
+			let okLayx = layui.okLayx;
+			okLayx.notice({
+				// title: (response.data == "success" ? "成功" : "错误") + "提示",
+				type: response.data,
+				message: reqtype + (response.data == "success" ? "成功" : "失败") + "！" + (response.msg == "" ?
+					"" : "\n原因：" + response.msg)
+			});
+		});
+	}
+</script>

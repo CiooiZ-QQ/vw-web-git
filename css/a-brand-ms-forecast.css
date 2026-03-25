@@ -1,0 +1,29 @@
+
+.body-set1 .content-card { padding-top: 0; height: auto; overflow-x: auto; }
+.body-set1 .content-card .table-top { width: 100%; height: 2rem; margin-top: 1.5vh; }
+.body-set1 .content-card .table-top p { float: right; width: 60%; line-height: 2rem; text-align: center; font-family: VWTextOffice_Bold; border-left: 0px solid #B6BFC5; }
+.body-set1 .content-card .table-top p { background: url(../img/arrow-line-left.png) left no-repeat, url(../img/arrow-line-right.png) right no-repeat; background-size: auto 25px, auto 25px; }
+.body-set1 .content-card .table-top p span { background-color: #1C273B; padding: 0 36px; font-size: 1.3rem; font-style: italic; color: #99FF66; }
+
+.full-table { height: auto; border-bottom: 2px solid #B6BFC5; text-align: center; }
+.full-table thead tr th { width: 20%; min-width: 250px; line-height: 1.6rem; border-top: 2px solid #B6BFC5; border-bottom: 2px solid #B6BFC5; font-family: VWTextOffice_Bold; }
+.full-table thead tr th { font-size: 1.1rem; border-right: 1px dotted #999999; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; table-layout: fixed; }
+.full-table thead tr th:nth-child(2) { border-right: 1px solid #B6BFC5; }
+.full-table thead tr th:last-child { border-right: 0; }
+.full-table thead tr th span { font-size: 14px; font-weight: normal; font-family: VWTextOffice_Regular; }
+.full-table tbody tr { transition: all 0.3s ease; }
+.full-table tbody tr:nth-child(odd) { background-color: rgba(255,255,255,0.12); } /* 设置奇数行(odd)/偶数行(even)的背景颜色  */
+.full-table tbody tr:hover { font-family: VWTextOffice_Bold; box-shadow: 0 0 20px 0 rgba(255, 255, 0, 0.6); }
+.full-table tbody tr td { vertical-align: middle; line-height: 1.8rem; border-right: 1px dotted #999999; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; table-layout: fixed; }
+/* .full-table tbody tr:hover td { font-size: 15px !important; } */
+.full-table tbody tr td:nth-child(2) { border-right: 1px solid #B6BFC5; }
+.full-table tbody tr td:last-child { border-right: 0; }
+.full-table thead tr th[class='forecast'], .full-table tbody tr td[class='forecast'] { color: #99FF66; }
+.full-table tbody tr td[class='isbenpin'] { color: #00B0F0; }
+.full-table tbody tr td i { margin-right: 3px; font-size: 20px; line-height: 1.4rem; vertical-align: middle; }
+
+#table_brand tbody tr td div { width: 90%; margin-left: 5%; display: flex; align-items: center; justify-content: space-between; font-size: 1rem; }
+#table_new_model tbody tr td { line-height: 1.4rem; }
+#table_new_model tbody tr td i { margin-right: 5px; font-size: 18px; line-height: 1.2rem; vertical-align: middle; }
+
+

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>表格过滤(使用角色权限功能测试)</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="../../../../../../css/oksub.css">
+	<link rel="stylesheet" href="../tableFilter.css">
+	<script src="../../../../layui.js"></script>
+</head>
+<body>
+<div class="ok-body">
+	<!--数据表格-->
+	<table class="layui-hide" id="roleTable" lay-filter="tableFilter"></table>
+</div>
+<!--js逻辑-->
+<script src="../../../../../../js/common.js"></script>
+<script>
+	layui.config({
+		base: '../' //设置自定义插件路径:根据实际路径进行设置
+	}).use(["element", "jquery", "table", "tableFilter", "form", "laydate", "okLayer", "okUtils", "okMock", "okLayx", "util"], function () {
+		let table = layui.table;
+		let form = layui.form;
+		let laydate = layui.laydate;
+		let okLayer = layui.okLayer;
+		let okUtils = layui.okUtils;
+		let okMock = layui.okMock;
+	    let okLayx = layui.okLayx;
+		let util = layui.util;
+        let $ = layui.jquery;
+		var tableFilter = layui.tableFilter;
+
+		sessionStorage.setItem("url", "json/table-filter.json");
+		
+		let roleTable = table.render({
+			elem: "#roleTable",
+			id: "roleTable",
+			url: sessionStorage.getItem("url") + "?params=",
+			size: "sm",
+			page: false,
+			limits: [10, 20, 50, 100], 
+			limit: 10,
+            toolbar: true, toolbar: "#toolbarTpl",
+			skin: 'row', even: true, //表格风格 隔行背景
+			request: { //用于实现后台分页
+			    pageName: 'pageIndex' //页码的参数名称，默认：page
+			    ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+			},
+			height: 'full-40',
+			cols: [[
+				{type: "checkbox", fixed: "left"},
+				{field: "ROLE_ID", title: "ID", sort: true, width: 100},
+				{field: "ROLE_NAME", title: "角色名", sort: true, width: 250},
+				{field: "ROLE_REMARK", title: "备注", sort: true},
+				{field: "LOGIN_NAME", title: "创建者", sort: true, width: 150},
+				{field: "CREATE_TIME", title: "创建时间", sort: true, width: 150, templet:"#createTime"},
+				{field: "ROLE_STATE", title: "状态", width: 80, align: "center", templet: "#statusTpl"},
+				{title: "操作", width: 80, align: "center", fixed: "right", templet: "#operationTpl"}
+			]],
+			done: function (res, curr, count) {
+				// console.log(res, curr, count);
+			}
+		});
+		 
+		var tableFilterIns = tableFilter.render({
+		    'elem' : '#roleTable',//table的选择器
+		    'mode' : 'local',//过滤模式
+		    'filters' : [
+				{field: "ROLE_NAME", name: "角色名", type: "checkbox", data: [{ "key":"管理员", "value":"管理员"},{ "key":"普通用户", "value":"普通用户"}]},
+				{field: "ROLE_REMARK", name: "备注", type: "input"},
+				{field: "CREATE_TIME", name: "创建时间", type: "date"},
+				{field: "ROLE_STATE", name: "状态", type: "checkbox", data: [{ "key":"启用", "value":"启用"},{ "key":"停用", "value":"停用"}]},
+			],//过滤项配置
+		    'done': function(filters){
+		        //结果回调
+		    }
+		});
+		
+	});
+</script>
+<!-- 行工具栏模板 -->
+<script type="text/html" id="statusTpl">
+	{{#  if(d.ROLE_STATE == 1){ }}
+	<span class="layui-btn layui-btn-normal layui-btn-xs">启用</span>
+	{{#  } else if(d.ROLE_STATE == 0) { }}
+	<span class="layui-btn layui-btn-warm layui-btn-xs">停用</span>
+	{{#  } }}
+</script>
+<script type="text/html" id="createTime">
+	<div>{{ layui.util.toDateString(d.CREATE_TIME, "yyyy-MM-dd HH:mm:ss") }}</div>
+</script>
+<script type="text/html" id="operationTpl">
+	<a href="javascript:" title="编辑" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
+	<a href="javascript:" title="删除" lay-event="del"><i class="layui-icon">&#xe640;</i></a>
+</script>
+</body>
+</html>

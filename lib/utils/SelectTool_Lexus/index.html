@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+    	<!--<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />-->
+    	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<title>调用选择器Demo</title>
+	    <!--引用CSS-->
+	    <link rel="stylesheet" href="css/selectTool_Lexus.css">
+		<style type="text/css">
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+			}
+			
+			.datatype {
+				float: left; 
+				height: 28px; 
+				width: 100%; 
+				border-bottom: solid #ccc 1px; 
+				font-size: 14px;
+				overflow-x: auto; 
+				overflow-y: hidden;
+			}
+			
+			input[type=button] {
+				margin: 2px;
+				padding: 2px;
+			}
+			
+			/*#selector{
+				width: 300px;
+				height: 600px;
+				border: solid 0px red;
+				display: none;
+			}*/
+			
+			.selector_parent {
+				position: relative;
+				display: none;
+			}
+			.selector_parent .mask {    
+				position: fixed;    
+				top: 0;    
+				left: 0;    
+				right: 0;    
+				bottom: 0;    
+				background: rgba(0,0,0,0.6);    
+				z-index: 1000;    
+			} 
+			.selector_parent #selector {    
+				position: fixed;    
+				width: 300px;    
+				top: 0;    
+				bottom: 0;    
+				/*transition: all .4s;    
+				-moz-transition: all .4s;    
+				-webkit-transition: all .4s;    
+				-o-transition: all .4s;    
+				-os-transition: all .4s;    */
+				z-index: 99999;    
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);    
+				overflow-y: scroll;    
+				background: #fff;    
+				/*-os-transform: translateX(-120%);    
+				transform: translateX(-120%);*/
+			} 
+			.selector_parent.show .mask {   
+				display: block;
+			}
+			.selector_parent.show #selector {    
+				/*-os-transform: translateX(0);    
+				transform: translateX(0);*/
+			}
+
+		</style>
+	    <!--引用JS-->
+	    <script src="js/jquery-1.7.1.min.js"></script>
+	    <script src="js/selectTool_Lexus.js"></script>
+	</head>
+	<body>
+		<div class="selector_parent">
+			<div class="mask"></div>    
+			<div id="selector"></div>
+		</div>
+			
+		<div id="selecttype" class="datatype">
+			<input type="button" value="整体" data-selecttype="ALL" />
+			<input type="button" value="品牌" data-selecttype="BRD" />
+			<input type="button" value="A级别" data-selecttype="STYLE" />
+			<input type="button" value="C级别" data-selecttype="SUB_SEG" />
+			<input type="button" value="能源" data-selecttype="FUEL" />
+			<input type="button" value="车型" data-selecttype="SUB_CAR" />
+			<input type="button" value="TYPE" data-selecttype="TYPE" />
+			<input type="button" value="型号" data-selecttype="VSN" />
+		</div>
+		<div id="datatype" class="datatype">
+			仅销量查询用到
+			<input type="button" value="豪华市场" data-datatype="LUX" />
+			<input type="button" value="PV市场" data-datatype="PV" />
+			setdata.datatype: <label id="lbl_datatype">LUX</label>
+		</div>
+		<!--<div id="selector"></div>-->	
+		<script type="text/javascript">
+			//定义以下变量 必须
+			var setdata = {
+			    "selecttype": "ALL", //选择类型：ALL(整体)、OEM(厂商，暂无该项)、BRD(品牌)、STYLE(A级别)、SUB_SEG(C级别)、FUEL(能源)、SUB_CAR(车型)、TYPE(TYPE)、VSN(型号)
+			    "datatype": "LUX", //选择类型：LUX(豪华市场，默认)、PV(PV市场)
+			    "multiselect": true, //是否多选，默认为true
+			    "selectedItem": [
+			       {"key":"0","value":"整体"}, //当selecttype为ALL时(默认)
+			    ],
+				"requrl": 'https://www.fanzhouauto.com/Lexus/WebApi/', //实际根据访问地址后带的get参数得来(通过初始页面时调用方法getValues获取)
+				"userid": '46555ac3-a958-44c2-b363-b636bd887423', //实际根据访问地址后带的get参数得来(通过初始页面时调用方法getValues获取)
+				"sessionkey": '511ecb07-af47-4516-af0b-4d38d5bade05', //实际根据访问地址后带的get参数得来(通过初始页面时调用方法getValues获取)
+			};
+			
+			//初始加载
+			window.onload = function () {
+				getValues(); //获取数据访问的验证参数值
+	       	};
+			
+			//获取数据访问的验证参数值
+			function getValues() {
+				var url = window.location.search;
+				if(url.indexOf("?") != -1) {
+					var str = url.substr(1);
+					var strs = str.split("&");
+					var key = new Array(strs.length);
+					var value = new Array(strs.length);
+					for(i = 0; i < strs.length; i++) {
+						if(strs[i].split("=")[0] == "requrl") setdata.requrl = unescape(strs[i].split("=")[1]);
+						if(strs[i].split("=")[0] == "userid") setdata.userid = unescape(strs[i].split("=")[1]);
+						if(strs[i].split("=")[0] == "sessionkey") setdata.sessionkey = unescape(strs[i].split("=")[1]);
+					}
+				}
+			}
+			
+			//调用各维度的选择器
+			$('#selecttype input[type=button]').click(function(){
+				var selecttype = this.dataset.selecttype;
+				if (selecttype == "ALL") { //切换维度类型为整体在(ALL)
+					if (setdata.selecttype != selecttype) { //表示从别的维度类型切换回来的
+						setdata.selecttype = "ALL"; //改变setdata的维度类型为ALL
+						setdata.selectedItem = [ {"key":"0","value":"整体"} ]; //点击整体按钮，已选维度(selectedItem)变回默认
+						getData(); ///////// 在这里执行获取数据刷新页面的方法  ////////////////////
+					}
+				}
+				else {
+					$(".selector_parent").show(); //打开选择器 现在无动画效果 前端自行解决
+					initSelector(selecttype, setdata, $('#selector')); //将选择器加入指定容器					
+					$('#selector_ok').click(function () {
+						setdata = g_setdata;
+						getData(); ///////// 在这里执行获取数据刷新页面的方法  ////////////////////
+					});
+				}
+			});
+			
+			//点击覆盖层退出选择器状态
+			$(".selector_parent").on("click",".mask",function(){
+				$(".selector_parent").hide();
+				console.log(setdata.selecttype + ' | ' + JSON.stringify(setdata.selectedItem));
+			});
+			
+			//改变市场datatype
+			$('#datatype input[type=button]').click(function(){
+				setdata.datatype = this.dataset.datatype;
+				$('#lbl_datatype').html(setdata.datatype);
+			});
+	        
+	        //获取数据实例
+	        var getData = function() {	     
+				console.log('获取数据之前，先将setdata.selectedItem数组下面的key变成一个逗号隔开的字符串，作为请求参数'); 
+				console.log(setdata.selecttype + ' | ' + JSON.stringify(setdata.selectedItem));   	
+				$.ajax({
+					type: "get",
+					async: true,
+					url: setdata.requrl + "Common/GetStyleList", //注意地址需要用到setdata.requrl
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader("userid", setdata.userid); //Header需要加上验证参数userid值为setdata.userid)
+						XMLHttpRequest.setRequestHeader("sessionkey", setdata.sessionkey); //Header需要加上验证参数sessionkey值为setdata.sessionkey
+					},
+					success: function(result) {}
+				});
+			};
+		</script>
+	</body>
+</html>

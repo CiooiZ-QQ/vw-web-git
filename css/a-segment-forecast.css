@@ -1,0 +1,53 @@
+
+#select-year { margin-right: 5px; z-index: 2; }
+/* #select-year span { position: relative; display: inline-block; margin-bottom: 1vh; padding: 0 15px; height: 4vh; line-height: 2; min-height: 36px; font-size: 1.1rem; margin-right: 5px; background-color: #1C273B; border: 1px solid #50595E; border-radius: 5px; cursor: pointer; } */
+/* #select-year span[class='active'] { background-color: #1E90FF; border: 1px solid #1E90FF; } */
+#select-year span { position: relative; display: inline-block; margin-bottom: 1vh; padding: 0 15px; height: 4vh; line-height: 2; min-height: 36px; font-size: 1.1rem; margin-right: 6px; cursor: pointer; }
+#select-year span::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: -1; transform: skewX(-25deg); background-color: #1C273B; border: 1px solid #50595E; }
+#select-year span:hover::before { border: 1px solid #666666; box-shadow: 0 0 12px 0 rgba(200,200,200,0.6); }
+#select-year span[class='active']::before { background-color: #1E90FF; border: 1px solid #1E90FF; }
+#select-year2 { display: none; }
+
+#ben-models { display: flex; flex-wrap: nowrap; overflow: hidden; }
+
+.body-set1 .content-card { height: 68vh; }
+
+.full-table { border-bottom: 2px solid #B6BFC5; }
+.full-table thead th { line-height: 2rem; border-top: 2px solid #B6BFC5; border-bottom: 2px solid #B6BFC5; font-family: VWTextOffice_Bold; }
+.full-table thead th { min-width: 50px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; table-layout: fixed; }
+.full-table thead th span { font-size: 12px; font-weight: normal; font-family: VWTextOffice_Regular; }
+.full-table tbody tr { transition: all 0.3s ease; }
+.full-table tbody tr:nth-child(odd) { background-color: rgba(255,255,255,0.12); } /* 设置奇数行(odd)/偶数行(even)的背景颜色  */
+.full-table tbody tr:hover { font-family: VWTextOffice_Bold; box-shadow: 0 0 20px 0 rgba(255, 255, 0, 0.6); }
+.full-table tbody tr td { min-width: 50px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; table-layout: fixed; }
+.full-table tbody tr:hover td { font-size: 15px !important; }
+.full-table tbody tr td:nth-child(1) { width: 8%; }
+.full-table tbody tr td:nth-child(2) { width: 20%; min-width: 100px; max-width: 100px; border-right: 1px solid #D9D9D9; text-align: right; padding-right: 0.8rem; }
+.full-table tbody tr td:nth-child(3) { width: 32%; text-align: left; }
+.full-table tbody tr td:nth-child(3) .rankbar { /* background-color: #00B0F0; */ background-color: #99D1CD; height: 14px; width: 1px; margin-top: 2px; float: left; }
+.full-table tbody tr:hover td:nth-child(3) .rankbar { height: 15px !important; }
+.full-table tbody tr td:nth-child(3) .corecomp { background-color: #FFC000; }
+.full-table tbody tr td:nth-child(3) span { padding-left: 0.5rem; float: left; }
+.full-table tbody tr td:nth-child(4) { width: 24%; position: relative; }
+.full-table tbody tr td:nth-child(4) img { width: 14px; height: 14px; transform: translateY(-2px); }
+.full-table tbody tr:hover td:nth-child(4) img { transform: translateX(2px) translateY(-2px); }
+.full-table tbody tr td:nth-child(4) span { padding-left: 10px; }
+.full-table tbody tr td:nth-child(5) { width: 16%; }
+
+
+
+@media screen and (max-width: 1024px) {
+	#select-year { display: none; }
+	#select-year2 { display: inline-block; }
+}
+@media screen and (max-width: 992px) {
+	#ben-models { display: block; }
+	#ben-models .null-card { display: none; }
+}
+@media screen and (max-width: 666px) {
+	.body-set1 .filter-card select { width: calc(50% - 1vh + 2px); }
+	.body-set1 .filter-card .selectdown:nth-child(even) select { margin-right: 0; }
+}
+@media screen and (max-height: 666px) {
+	.full-table thead th { line-height: 1.8rem; }
+}

@@ -1,0 +1,303 @@
+[
+	{
+		"title": "home",
+		"href": "pages/console.html",
+		"fontFamily": "ok-icon",
+		"icon": "&#xe6b8;",
+		"spread": true,
+		"isCheck": true
+	},
+	{
+		"title": "产品",
+		"href": "",
+		"fontFamily": "ok-icon",
+		"icon": "&#xe65d;",
+		"spread": false,
+		"children": [
+			{
+				"title": "新车上市",
+				"href": "",
+				"fontFamily": "layui-icon",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "改款换代",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "配置对比",
+				"href": "pages/product/con-comparison/table.html",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "性价比指数",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "配置梯度",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "装备装车",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "自造车",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "PV管理",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			}
+		]
+	},
+	{
+		"title": "销量",
+		"href": "",
+		"fontFamily": "ok-icon",
+		"icon": "&#xe722;",
+		"spread": false,
+		"children": [
+			{
+				"title": "整体市场",
+				"href": "pages/sales/whole_market.html",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "细分市场",
+				"href": "pages/sales/segment_market.html",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "品牌对比",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "分车型",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "排名情况",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "自由查询",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "MIX查询",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "Olap",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			}
+		]
+	},
+	{
+		"title": "价格",
+		"href": "",
+		"fontFamily": "ok-icon",
+		"icon": "&#xe6ed;",
+		"spread": false,
+		"children": [
+			{
+				"title": "价格/折扣率走势",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "价格指数",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			}
+		]
+	},
+	{
+		"title": "政策",
+		"href": "",
+		"fontFamily": "ok-icon",
+		"icon": "&#xe7ad;",
+		"spread": false,
+		"children": [
+			{
+				"title": "政策原件",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "政策解读",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			}
+		]
+	},
+	{
+		"title": "网点",
+		"href": "",
+		"fontFamily": "ok-icon",
+		"icon": "&#xe6f3;",
+		"spread": false,
+		"children": [
+			{
+				"title": "网点分布",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "变化分析",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "店均销量",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			}
+		]
+	},
+	{
+		"title": "新闻",
+		"href": "",
+		"fontFamily": "ok-icon",
+		"icon": "&#xe682;",
+		"spread": false,
+		"children": [
+			{
+				"title": "行业动态",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "业界新闻",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			}
+		]
+	},
+	{
+		"title": "文件",
+		"href": "",
+		"fontFamily": "ok-icon",
+		"icon": "&#xe739;",
+		"spread": false,
+		"children": [
+			{
+				"title": "报告管理",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "共享文件",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			}
+		]
+	},
+	{
+		"title": "综合分析",
+		"href": "",
+		"fontFamily": "ok-icon",
+		"icon": "&#xe660;",
+		"spread": false,
+		"children": [
+			{
+				"title": "车型深度对比",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "厂商/品牌分析",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "价格段分析",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "新能源专题",
+				"href": "",
+				"icon": "&#xe62e;",
+				"spread": false
+			}
+		]
+	},
+	{
+		"title": "系统管理",
+		"href": "",
+        "fontFamily": "ok-icon",
+        "icon": "&#xe68a;",
+		"spread": false,
+		"children": [
+			{
+				"title": "用户管理",
+				"href": "pages/member/user-list.html",
+				"fontFamily": "layui-icon",
+				"icon": "&#xe66f;",
+				"spread": false
+			},
+			{
+				"title": "角色权限",
+				"href": "pages/member/role-list.html",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "菜单管理",
+				"href": "pages/member/menu-list.html",
+				"icon": "&#xe62e;",
+				"spread": false
+			},
+			{
+				"title": "日志查询",
+				"href": "pages/system/log.html",
+				"icon": "&#xe62e;",
+				"spread": false
+			}
+		]
+	}
+]

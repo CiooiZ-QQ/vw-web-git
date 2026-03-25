@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<link rel="stylesheet" href="../layui/css/layui.css?v=2.2.8">
+		<title>连线DEMO</title>
+		<style>
+			#diagramContainer {
+				padding: 20px;
+				width: 85%;
+				height: 700px;
+				border: none;
+			}
+
+			.item {
+				position: absolute;
+				height: 46px;
+				width: 230px;
+				border: 1px solid lightgray;
+				float: left;
+		
+			} 
+
+			lable {
+				vertical-align: -webkit-baseline-middle;
+				position: relative;
+				margin-left: 45%;
+				top: 16%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="diagramContainer"></div>
+		<script src="jquery.js"></script>
+		<script src="jquery-ui.js"></script>
+		<script src="jquery.jsplumb.js"></script>
+		<script src="../layui-v2.6.8/layui/layui.js?v=2.2.8"></script>
+		<!-- <script src="lib/js/set_echarts.js"></script> -->
+		<script>
+			var div_arr = [
+				['AA', 'BB', 'CC', 'DD'],
+				['II', 'JJ', 'KK', 'LL', 'VV', 'ZZ'],
+				['EE', 'FF', 'GG', 'HH'],
+				['MM', 'OO', 'PP']
+			]
+			var plumb_arr = []; //用于判断是否重复连接
+			var criterion_arr = []; //判断基准列
+			var sourceId_arr = 0
+			var targetId_arr = 0
+			var color='';
+			var current_id=''
+			//随机生成颜色方法
+			function RandomColor() {
+				var r = Math.floor(Math.random() * 256); //随机生成256以内r值
+				var g = Math.floor(Math.random() * 256); //随机生成256以内g值
+				var b = Math.floor(Math.random() * 256); //随机生成256以内b值
+				return `rgb(${r},${g},${b})`; //返回rgb(r,g,b)格式颜色
+			};
+			//删除所有连接
+			function DeleteOnline() {
+				plumb_arr = [];
+				sourceId_arr = []
+				targetId_arr = []
+				jsPlumb.detachEveryConnection()
+			}
+			
+			function UpdateColor(obj) {
+				criterion_arr = []
+				sourceId_arr = 0
+				targetId_arr = 0
+				color=RandomColor()
+				var property = $('#' + obj.id).attr("data-color")
+				if (property != undefined) {
+					SetDefaultPaintStyle(color)
+				} else {
+					GetCriterion(plumb_arr,obj.id)
+					console.log(criterion_arr.join(','), '长度', criterion_arr.length)
+					console.log('current_id',current_id)
+				}
+			}
+			//删除列
+			function DeleteColumn(obj){
+				var id_arr=obj.id.split('-')
+				$.each(id_arr,function(key,val){
+					jsPlumb.detachAllConnections(val);
+					$("#"+val).remove()
+				})
+			}
+		
+			function SetDefaultColor(this_id,obj_id,plumb_arr){
+				var base_color=[]
+				$.each(plumb_arr,function(key,val){
+					if(val.includes(this_id+'-'+obj_id)){
+						base_color.push(val)
+					}
+				})
+				console.log('找到颜色',base_color.join(',')+' 本身this_id:'+this_id+' obj_id:'+obj_id)
+				return base_color;
+			}
+			//设置颜色与悬浮颜色
+			function SetDefaultPaintStyle(parent_color){
+				jsPlumb.Defaults.PaintStyle = {
+					lineWidth: 1,
+					strokeStyle: parent_color
+				}
+				jsPlumb.Defaults.HoverPaintStyle={ 
+					lineWidth: 2, 
+					strokeStyle: parent_color }
+			}
+			//递归查询子级是哪个父级的
+			function GetCriterion(data_arr, this_id) {
+				if (div_arr[0].includes(this_id)) {
+					if(!criterion_arr.includes(this_id)){criterion_arr.push(this_id)}
+					 criterion_arr.sort()
+					 console.log(criterion_arr)
+					 SetDefaultPaintStyle(SetDefaultColor(criterion_arr[0],current_id,data_arr)[0].split('-')[2])
+				}
+				$.each(data_arr, function(key, val) {
+					if (val.includes(this_id) && val.split('-')[1] == this_id) {
+							console.log(' 子级:'+val)
+						 if(div_arr[0].includes(val.split('-')[0])){//找到基准列
+						 	current_id=this_id
+						 }
+						GetCriterion(data_arr, val.split('-')[0])
+					}
+				})
+			}
+
+			jsPlumb.ready(function() {
+				jsPlumb.setContainer('diagramContainer') //默认可以节点可以拖到区域外，设置Container固定只能在当前区域移动
+
+				var dynamicAnchors = [
+					[1, 0.2, 1, 0, 0, 13],
+					[1, 0.2, 5, 0],
+					[0, 0.8, -1, 0, 0, -13],
+					[0, 0.8, -1, 0] //动态描点
+				]
+				var common = {
+					isSource: true,
+					isTarget: true,
+					connector: ['Straight'],
+					endpoint: "Blank"
+				}
+
+				var html = '';
+				var left = 40;
+				var top_offset =80;
+				var left_offset = 352;
+				var is_conn = '';
+				var addprope = ''
+				var background_color=['#fafafa','#f3fafe'];
+				for (let a = 0; a < div_arr.length; a++) {
+					var top = 116;
+					var column_id=''
+					html+='<div class="" style="margin-right: 100px;float: left; background-color: '+(a%2==0?background_color[0]:background_color[1])+';width: 232px;height: 100%;border:none;margin-left: 20px;">'
+					for (let b = 0; b < div_arr[a].length; b++) {
+						if (a == 0) {
+							addprope = ' data-color=""'
+						} else addprope = ''
+						html +=  '<div id=' + div_arr[a][b] + addprope +
+							' class="item" onmousedown="UpdateColor(this)" style="top:' + top + 'px;left:' + left +
+							'px"><lable>' + div_arr[a][b] + '</lable></div>'
+						is_conn += div_arr[a][b] + ',';
+						column_id+=div_arr[a][b]+'-'
+						top += top_offset;
+					}
+		
+					// html+='<div class="layui-btn-group" style="margin-right: 10px;">'+
+					// 		  '<button type="button"   class="layui-btn layui-btn-primary" style="width:100px; top:' + top+ 'px;left:' + left +
+					// 		'px">修改基准</button>'+
+					// 		'<button type="button" id='+column_id.slice(0, column_id.length - 1)+' onclick="DeleteColumn(this)" class="layui-btn layui-btn-primary" style="width:100px; top:' + top+ 'px;left:' + left +
+					// 		'px">删除列</button></div></div>'
+					html+='</div>'
+					left += left_offset;
+					
+				}
+
+				$("#diagramContainer").html(html)
+				$("#diagramContainer").append(`
+						<button type='button' class='layui-btn layui-btn-primary' 
+							style='position: relative;top: 90%;' onclick='DeleteOnline()'>删除所有连接</button>
+					`)
+				for (let a = 0; a < div_arr.length; a++) {
+					for (let b = 0; b < div_arr[a].length; b++) {
+						if (div_arr.length > 3) {
+							if (a == 0) {
+								jsPlumb.makeSource(div_arr[a][b], {
+									anchor: 'Continuous',
+								}, common)
+							} else {
+								jsPlumb.makeSource(div_arr[a][b], {
+									anchor: 'Continuous',
+								}, common)
+								jsPlumb.makeTarget(div_arr[a][b], {
+									anchor: 'Continuous',
+								}, common)
+							}
+						}
+					}
+				}
+				//删除连线
+				function JsplumbConn(conn) {
+					jsPlumb.detach(conn)
+					for (let i = 0; i < plumb_arr.length; i++) {
+						if (plumb_arr[i].includes(conn.sourceId + '-' + conn.targetId)) {
+							plumb_arr.splice(i, 1)
+						}
+					}
+				}
+				// 双击删除连接线
+				jsPlumb.bind('dblclick', (conn) => {
+					JsplumbConn(conn)
+				})
+				// 单击删除连接线
+				jsPlumb.bind('click', (conn) => {
+					JsplumbConn(conn)
+				})
+
+				//连接拖动结束
+				jsPlumb.bind('connectionDragStop', (conn) => {
+
+				})
+
+
+				// 当连接建立前
+				jsPlumb.bind('beforeDrop', function(info) {
+					var is_str = is_conn.replace(',', '')
+					var begin_position = is_str.indexOf(info.sourceId);
+					var exists = is_str.indexOf(info.targetId, begin_position + 1)
+					var begin_index = 0
+					var eng_index = 0
+					var is_arr = is_conn.split(',')
+					var find_index = 0
+					var find_str = ''
+					var last_index = 0
+					var last_str = ''
+					var is_current = true
+					var p_str = ''
+					var c_str = ''
+
+					for (let t = 0; t < div_arr.length; t++) { //找出当前元素的下一列元素最后一个元素的位置和第一个元素
+						for (let r = 0; r < div_arr[t].length; r++) {
+							if (div_arr[t][r] == info.sourceId) {
+								if (t == div_arr.length - 1) break
+								find_str = div_arr[t + 1][0]
+								last_str = div_arr[t + 1][div_arr[t + 1].length - 1]
+								break
+							}
+						}
+					}
+
+					//为了处理当前选择元素连线是否是同一列		
+					for (let t = 0; t < div_arr.length; t++) {
+						for (let r = 0; r < div_arr[t].length; r++) {
+							if (div_arr[t][r] == find_str && div_arr[t].includes(info.targetId)) {
+								is_current = false
+								break;
+							}
+						}
+					}
+
+					for (let c = 0; c < is_arr.length; c++) {
+						if (is_arr[c] == info.targetId) { //选择的目标位置下标
+							end_index = c
+						}
+						if (is_arr[c] == last_str) { //可选的最大目标位置下标
+							last_index = c
+						}
+						if (is_arr[c] == find_str) { //当前目标位置的首个元素下标
+							find_index = c
+						}
+					}
+
+					// console.log('是否往前连线:' + exists + ' 选中的目标位置:' + end_index +
+					// 	'选择目标位置的下个数组第一个位置的下标' + find_index + ' 可选的最大目标位置下标:' + last_index + ' 是否在同一列:' +
+					// 	is_current, '是否第一列长度:' + criterion_arr.length, plumb_arr.length)
+					//判断当前选中的锚点如果是往后连线或者连线的的目标位置超出了或者是否当前列连线
+					if (exists == -1 || end_index > last_index || is_current ||
+						criterion_arr.length == 0 && !div_arr[0].includes(info.sourceId)) {
+						console.log(' 连接失败')
+						return false
+					} else {
+						plumb_arr.push(info.sourceId + '-' + info.targetId+'-'+color);
+						p_str = plumb_arr.join(",") + ",";
+						for (let i = 0; i < plumb_arr.length; i++) { //获取锚点和目标的连线数量
+							if (plumb_arr[i].split('-')[0] == info.sourceId) {
+								targetId_arr++
+							}
+							if (plumb_arr[i].split('-')[1] == info.sourceId) {
+								sourceId_arr++
+							}
+						}
+						if (targetId_arr > sourceId_arr && !div_arr[0].includes(info.sourceId)) { //目标线的数量不能比父级数量线多
+							targetId_arr=sourceId_arr
+							plumb_arr.pop()
+							return false
+							console.log(' 连接失败')
+						}
+					}
+
+					// if (plumb_arr.length != 1) { //判断是否重复连线
+					// 	for (let i = 0; i < plumb_arr.length; i++) {
+					// 		if (p_str.replace(plumb_arr[i] + ",", "").indexOf(plumb_arr[i] + ",") > -1) {
+					// 			plumb_arr.splice(i, 1)
+					// 			//console.log(' 连接失败')
+					// 			return false
+					// 		}
+					// 	}
+					// }
+
+					console.log(' 连接成功')
+					return true
+				})
+			})
+		</script>
+	</body>
+
+</html>

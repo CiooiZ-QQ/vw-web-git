@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="renderer" content="webkit" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+		<title class="title">可输入选择框组件</title>
+		<!-- common -->
+		<!-- css -->
+		<link rel="stylesheet" type="text/css" href="../../../../css/layui.css" />
+		<link rel="stylesheet" type="text/css" href="../selectInput.css" />
+		<!-- js -->
+		<script src="../../../../layui.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<!-- <div class="layui-container">
+			<div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+				<div class="layui-elem-quote yutons_nav">
+					<div>可输入选择框组件</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+				<form class="layui-form  yutons-form-view">
+					<div class="layui-form-item">
+						<label class="layui-form-label">姓名</label>
+						<div class="layui-input-block">
+							<input type="text" id="userName" name="userName" lay-verify="required" autocomplete="off" placeholder="请输入"
+							 class="layui-input" />
+						</div>
+					</div>
+				</form>
+			</div>
+		</div> -->
+		<div id="test" style="background-color: #0000FF; width: 100%; height: 500px;"></div>
+		<script type="text/javascript">
+			//引入自定义插件
+			// 模块加载的机制不明白的或者加载不进来的，请参考layui官方文档或者自行百度
+			layui.config({
+				base: '../' //设置自定义插件路径:根据实际路径进行设置
+			}).use(['form', 'selectInput'], function() {
+			  var $ = layui.$, form = layui.form, selectInput= layui.selectInput;
+			           var ins = selectInput.render({
+			            // 容器id，必传参数
+			            elem: '#test',
+			            name: 'test', // 渲染的input的name值
+			            initValue:'iPhone12 Pro Max', // 渲染初始化默认值
+			            placeholder: '请输入名称', // 渲染的inputplaceholder值
+			            // 联想select的初始化本地值，数组格式，里面的对象属性必须为value，name，value是实际选中值，name是展示值，两者可以一样
+			            data: [
+			                {value: 1111, name: 1111},
+			                {value: 2333, name: 2222},
+			                {value: 2333, name: 2333},
+			                {value: 2333, name: 2333},
+			            ],
+			            url: "https://www.layui.com/", // 异步加载的url，异步加载联想词的数组值
+			            remoteSearch: false,// 是否启用远程搜索 默认是false，和远程搜索回调保存同步
+			            // 解析回调，如果你的异步返回的data不是上述的data格式，请在此回调格式成对应的数据格式，回调参数是异步加载的数据
+			            parseData: function (data) {
+			
+			            },
+			            error: function (error) { // 异步加载出错的回调 回调参数是错误msg
+			
+			            },
+			            done: function (data) { // 异步加载成功后的回调 回调参数加载返回数据
+			
+			            },
+			            remoteMethod: function (value, cb) { // 远程搜索的回调函数
+			                // value 是input实施输入的value值
+			                // cb是回调处理函数，请在执行ajax搜索请求成功之后执行此回调函数
+			
+			                //案例
+			                //这里如果val为空, 则不触发搜索
+			                if (!value) {
+			                    return cb([]);
+			                }
+			                //这里的$.ajax去请求后台拿回数据
+			                $.ajax({
+			                    method: 'get',
+			                    url: 'https://www.fastmock.site/mock/98228b1f16b7e5112d6c0c87921eabc1/xmSelect/search',
+			                    data: {
+			                        keyword: val,
+			                    },
+			                    success: function (data) {
+			                        return cb(data)
+			                    }
+			                })
+			            }
+			        }
+			    });
+			
+			    // 监听input 实时输入事件
+			    ins.on('itemInput(test1)', function (obj) {
+			        console.log(obj);
+			    });
+			
+			    // 监听select 选择事件
+			    ins.on('itemSelect(test1)', function (obj) {
+			        console.log(obj);
+			    });
+			
+			
+			   // 如果使用本地数据加载，不要使用设置远程 url参数 也不要将remoteSearch参数设置为 true，完整的本地赋值数据案例
+			
+			    var ins2 = selectInput.render({
+			            elem: '#test1',
+			            data: [
+			                {value: 1111, name: 1111},
+			                {value: 2333, name: 2222},
+			                {value: 2333, name: 2333},
+			                {value: 2333, name: 2333},
+			            ],
+			            placeholder: '请输入名称',
+			            name: 'list_common',
+			            remoteSearch: false
+			      });
+			
+			
+			   // 这是我项目中的需求做的一个组件，可能存在一些问题，如果有问题可以联系我，也可以去码云提问，有时间我会去看的，会尽量完善这个组件的
+			
+			   // 2020-10-23 更新：允许value和name值不同，显示用name，取值用value；新增参数initValue，设置input默认初始值
+			});
+		</script>
+	</body>
+</html>

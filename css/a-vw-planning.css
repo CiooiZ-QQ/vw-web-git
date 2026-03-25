@@ -1,0 +1,28 @@
+
+.body-set1 .content-card { height: 80.2vh; display: flex; flex-direction: column; justify-content: center; font-size: 1.0rem; }
+.body-set1 .content-card .chart-title { position: absolute; left: 5vh; top: 3.6vh; z-index: 999; }
+
+#chart_bar_line { height: 55vh; min-height: 330px; }
+#table_fueltype_mkt { height: 16.2vh; min-height: 100px; border-top: 1px solid #FFFFFF; margin-top: 3vh; text-align: center; }
+#table_fueltype_mkt tbody tr { border-bottom: 1px solid #FFFFFF; transition: all 0.3s ease; }
+/* #table_fueltype_mkt tbody tr:nth-child(odd) { background-color: rgba(255,255,255,0.12); } */
+#table_fueltype_mkt tbody tr:hover { font-size: 1rem; font-family: VWTextOffice_Bold; box-shadow: 0 0 20px 0 rgba(255, 255, 0, 0.6); }
+#table_fueltype_mkt tbody tr td { width: 16.67%; min-width: 50px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; table-layout: fixed; }
+#table_fueltype_mkt tbody tr td:first-child { font-family: VWTextOffice_Bold; }
+
+.body-set1 .top3-table { height: 22.73vh; min-height: 140px; border: 1px solid #FFFFFF; margin-top: 3vh; text-align: center; }
+.body-set1 .top3-table:first-child { margin-top: 0; }
+.body-set1 .top3-table thead tr th { width: 33.33%; height: 4.55vh; min-height: 24px; line-height: 2; border: 1px solid #FFFFFF; font-family: VWTextOffice_Bold; }
+.body-set1 .top3-table tbody tr td { border-right: 1px solid #FFFFFF; }
+.body-set1 .top3-table thead tr th, .body-set1 .top3-table tbody tr td { min-width: 50px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; table-layout: fixed; }
+
+
+@media screen and (max-width: 1200px) {
+	.body-set1 .content-card { font-size: 0.875rem; }
+}
+@media screen and (max-width: 992px) {
+	.body-set1 .content-card { font-size: 1.0rem; }
+}
+@media screen and (max-width: 666px) {
+	.body-set1 .content-card { font-size: 0.875rem; }
+}

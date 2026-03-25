@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>添加用户</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../css/oksub.css?v=2.6.1">
+		<script type="text/javascript" src="../../lib/jquery/jquery-3.3.1.min.js?v=2.6.1"></script>
+		<script type="text/javascript" src="../../lib/loading/okLoading.js?v=2.6.1"></script>
+		<style type="text/javascript">
+			.x-red{
+				color: red;
+				position: relative;
+				top: 3px;
+			}
+			
+			 
+			.layui-form-item {
+				margin-bottom: 15px;
+				clear: both;
+				*zoom: 1
+			}
+			 
+			.layui-form-item:after {
+				content: '\20';
+				clear: both;
+				*zoom: 1;
+				display: block;
+				height: 0
+			}
+			 
+			.layui-form-item .layui-input-inline {
+				float: left;
+				width: 190px;
+				margin-right: 10px
+			}
+			 
+			.password, .n-txtCss {
+				display: flex;
+				align-items: center;
+			}
+			 
+			.password .fa {
+				position: absolute;
+				display: inline-block;
+				right: 16px;
+				top: 0px;
+				font-size: 20px;
+				cursor: pointer;
+			}
+			 
+			.secret {
+				border: none;
+				border-bottom: 1px solid #ccc;
+				text-indent: 10px;
+			}
+			
+			.location {
+				position: absolute;
+				right: 10px;
+				bottom: 2px;
+			}
+
+			.layui-input-lable {
+				display: inline;
+				width: 90%;
+			}
+
+			.layui-input {
+				width: 90%;
+			}
+
+			.layui-form-select .layui-edge {
+				right: 40px;
+			}
+
+			.layui-input-inline .secreteyes1 {
+				position: relative
+			}
+		</style>
+		<script>
+			$(function(){
+				var a = 0;
+						$(".secreteyesk1").hide();
+						$(".secreteyesk2").hide();
+						$('.eyes1').click(function() {
+							a += 1;
+							if (a % 2 == 0) {
+								$('.secreteyesk1').hide();
+								$('.secreteyes1').show();
+								$('#PASSWORD').prop('type', 'password');
+							} else if (a % 2 != 0) {
+								$('.secreteyes1').hide();
+								$('.secreteyesk1').show();
+								$('#PASSWORD').prop('type', 'text');
+							}
+						})
+						a = 0;
+						$('.eyes2').click(function() {
+							a += 1;
+							if (a % 2 == 0) {
+								$('.secreteyesk2').hide();
+								$('.secreteyes2').show();
+								$('.secret2').prop('type', 'password');
+							} else if (a % 2 != 0) {
+								$('.secreteyes2').hide();
+								$('.secreteyesk2').show();
+								$('.secret2').prop('type', 'text');
+							}
+							});
+				
+			});
+		</script>
+	</head>
+	<body>
+		<div class="ok-body">
+			<!--form表单-->
+			<form class="layui-form layui-form-pane ok-form " lay-filter="filter">
+				<div style="width:100%;">
+					<div style="margin-left:30px;float:left;width:48%">
+		
+						<div class="layui-form-item">
+							<!-- <label class="layui-form-label" data-i18n-text="nickname">昵称</label> -->
+							<label class="layui-form-label" data-i18n-text="nickname">NickName</label>
+							<div class="layui-input-block">
+								<input id="NICK_NAME" type="text" name="NICK_NAME" placeholder="请输入昵称"
+									autocomplete="off" class="layui-input layui-input-lable" lay-verify="required"
+									data-i18n-placeholder="peanickname"><label style="color: red;width: 5px;">*</label>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<!-- <label class="layui-form-label" data-i18n-text="op_account_number">用户账号</label> -->
+							<label class="layui-form-label" data-i18n-text="op_account_number">Account</label>
+							<div class="layui-input-block">
+								<input id="LOGIN_NAME" type="text" name="LOGIN_NAME" placeholder="请输入账户"
+									autocomplete="off" class="layui-input layui-input-lable"
+									lay-verify="required|LOGIN_NAME" data-i18n-placeholder="op_account_number">
+								<label style="color: red;width: 5px;">*</label>
+								<input type="hidden" name="USID" />
+								<input type="hidden" name="USERID" id="USERID" />
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<!-- <label class="layui-form-label" data-i18n-text="password">密码</label> -->
+							<label class="layui-form-label" data-i18n-text="password">Password</label>
+							<div class="layui-input-block">
+								<label style="color: red;width: 5px;"><input id="PASSWORD" type="text" name="PASSWORD"
+										placeholder="请输入密码" autocomplete="off"
+										class="layui-input eyes1 layui-input-lable" lay-verify="required|password"
+										data-i18n-placeholder="password"> *
+									<img class="secreteyes1 fa" src="../../images/closeeve.gif"
+										style="position:absolute;float:left;margin-left:-43px;margin-top:8px;" />
+									<!-- 闭眼 -->
+									<img class="secreteyesk1 none fa" src="../../images/openeve.gif"
+										style="position:absolute;float:left;margin-left:-43px;margin-top:8px;" />
+									<!-- 睁眼 -->
+								</label>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<!-- <label class="layui-form-label" data-i18n-text="rolename">角色</label> -->
+							<label class="layui-form-label" data-i18n-text="rolename">Role</label>
+							<div class="layui-input-block">
+								<select name="ROLE_ID" id="ROLE_ID" lay-filter="demo">
+									<!-- <option value="0">管理员</option>
+									<option value="1">普通用户</option> -->
+								</select>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<!-- <label class="layui-form-label" data-i18n-text="phone">手机号码</label> -->
+							<label class="layui-form-label" data-i18n-text="phone">Phone</label>
+							<div class="layui-input-block">
+								<input type="text" name="PHONE" placeholder="请输入手机号码" autocomplete="off"
+									class="layui-input layui-input-lable" data-i18n-placeholder="phone"
+									lay-verify="required|phone"><label style="color: red;width: 5px;">*</label>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<!-- <label class="layui-form-label" data-i18n-text="email">邮箱</label> -->
+							<label class="layui-form-label" data-i18n-text="email">Email</label>
+							<div class="layui-input-block">
+								<input type="text" name="EMAIL" placeholder="请输入邮箱" autocomplete="off"
+									class="layui-input layui-input-lable" data-i18n-placeholder="peaemail"
+									lay-verify="required|email"><label style="color: red;width: 5px;">*</label>
+							</div>
+						</div>
+						<div class="layui-form-item">
+						<!-- 	<label class="layui-form-label" data-i18n-text="state">状态</label> -->
+							<label class="layui-form-label" data-i18n-text="state">State</label>
+							<div class="layui-input-block">
+								<input type="checkbox" name="STATE" lay-skin="switch" lay-text="启用|停用" checked value="1">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<!-- <label class="layui-form-label" data-i18n-text="sex">性别</label> -->
+							<label class="layui-form-label" data-i18n-text="sex">Sex</label>
+							<div class="layui-input-block">
+								<input type="radio" name="SEX" value="0" title="男" checked>
+								<input type="radio" name="SEX" value="1" title="女">
+							</div>
+						</div>
+						<div class="layui-form-item" id="CUSTOMER_ROW" style="display: none;">
+							<!-- <label class="layui-form-label" data-i18n-text="sex">客户</label> -->
+							<label class="layui-form-label" data-i18n-text="Customer">Customer</label>
+							<div class="layui-input-block">
+								<select name="CUSTOMER_NAME" id="CUSTOMER_NAME" lay-filter="demo1">
+									<!-- <option value="未指定">未指定</option> -->
+								</select>
+							</div>
+						</div>
+					</div>
+					<div style="float:left;margin-left: 20px; width: 40%;">
+						<div class="layui-form-item">
+						<!-- 	<label class="layui-form-label" data-i18n-text="CONSOLE" style="width:120px;">工作台权限</label> -->
+							<label class="layui-form-label" data-i18n-text="CONSOLE" style="width:120px;">Workbench Permissions</label>
+							<div class="layui-input-block" id="console_radio">
+								<input type="checkbox" name="IS_CONSOLE" lay-skin="switch" lay-text="启用|停用" checked
+									value="0">
+								<!-- <input type="radio" name="IS_CONSOLE" value="0" title="包含" checked>
+							<input type="radio" name="IS_CONSOLE" value="1" title="不包含"> -->
+							</div>
+						</div>
+					</div>
+					<div style="float:left;margin-left: 20px; width: 40%;">
+						<div class="layui-form-item">
+							<!-- <label class="layui-form-label" data-i18n-text="userright">用户权限</label> -->
+							<label class="layui-form-label" data-i18n-text="userright">User right</label>
+							<div class="layui-input-block" style="height: 75vh; overflow: hidden; overflow-y: auto;">
+								<div id="authTree"></div>
+							</div>
+						</div>
+					</div>
+		
+				</div>
+		
+				<div class="layui-form-item location">
+					<div class="layui-input-block" style="margin-left: 0;">
+						<button class="layui-btn " lay-filter="add" lay-submit="">Submit</button>
+						<button type="reset" id="cz" class="layui-btn layui-btn-primary">Reset</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<!--js逻辑-->
+		<script src="../../lib/layui/layui.js?v=2.6.1"></script>
+		<script src="../../js/document_log.js?v=2.6.1"></script>
+		<script src="../../js/common.js?v=2.6.1"></script>
+		<script src="../../js/i18n/jquery.i18n.properties.js?v=2.6.1"></script>
+		<script src="../../js/i18n/i18np.js?v=2.6.1"></script>
+		<script>
+			g_initlang('../../'); //更新语言版本
+			
+			//只有当前几个USID能设置账号的客户信息
+			var arr_usid = ['5660f012-1351-42f8-955a-e470325e0847'];
+			if (arr_usid.indexOf(localStorage.getItem(g_accr_auth_usid)) != -1) $('#CUSTOMER_ROW').css('display', 'block');
+			
+			let initDatas;
+
+			function initForm(data) {
+				document.getElementById("USERID").value = data.USID;
+				var jsonString = JSON.stringify(data);
+				initDatas = JSON.parse(jsonString);
+				$('#console_radio input').removeAttr('checked');
+				setTimeout(() => {
+					if (data.IS_CONSOLE) {
+						$('#console_radio [value="0"]').attr('checked', true);
+					} else {
+						$('#console_radio [value="1"]').attr('checked', true);
+					};
+					layui.use('form', function() {
+						var form = layui.form;
+						form.render();
+						//console.log(2222222,$('#console_radio input').val() )	
+					});
+				}, 500)
+
+				if (typeof(initDatas) != "undefined") {
+
+					//document.getElementById("ROLE_NAME").disabled = true;
+					document.getElementById("LOGIN_NAME").disabled = true;
+					document.getElementById("PASSWORD").setAttribute("type", "password");
+				}
+			}
+
+
+
+
+			var menudata = [{
+				"id": 0,
+				"title": "根目录",
+				"spread": true,
+				"children": []
+			}];
+
+			$(function() {
+
+				layui.use(["element", "tree", "form", "laydate", "okLayer", "okUtils", "i18np"], function() {
+					let form = layui.form;
+					let laydate = layui.laydate;
+					let tree = layui.tree;
+					let okLayer = layui.okLayer;
+					let i18np = layui.i18np;
+					let okUtils = layui.okUtils;
+					i18np.loadProperties();
+					var $ = layui.jquery;
+
+					okLoading.close();
+
+					//监听提交
+					form.on('select(demo)', function(data) {
+						doTerrNodeData();
+						okUtils.ajax(g_req_url + "RoleMenuAuth/GetAuthByRoleID", "get", {
+							roleid: data.value
+						}, true, true).done(function(response) {
+							Print_Log("User Management", "提交", "提交更新用户信息");
+							var authdata = response.data;
+							if (authdata.length > 0) {
+								// tree.setChecked('authTree', authdata); //勾选指定节点 原有方法有问题，当父级菜单勾选时，所有子菜单都会勾选
+								doTreeNodeCheck(menudata, authdata);
+								// console.log(menudata);
+								tree.reload('authTree', {}); //重载Tree
+							}
+						}).fail(function(error) {
+							console.log(error)
+						});
+					});
+
+
+					if (typeof(initDatas) != "undefined") form.val("filter", initDatas);
+
+					//数据校验
+					form.verify({
+						ROLE_NAME: function(value, item) {
+							// console.log(value, item);
+							if (value.length < 3 || value.length > 20) return "角色名称的长度必须为3-20位！";
+							let result = "";
+							if (typeof(initDatas) == "undefined") {
+								okUtils.ajax(g_req_url + "RoleMenuAuth/CheckRoleName", "get", {
+									rolename: value
+								}, true, false).done(function(response) {
+									if (response.data == "success") result =
+									"该角色名称已存在，请重新输入";
+								});
+								if (result != "") return result;
+							}
+						}
+					});
+
+
+					if (okUtils.local(g_accr_auth_menus)) menudata[0].children = okUtils.local(
+					g_accr_auth_menus);
+					if (menudata[0].children != null) {
+						// menudata[0].children[0].disabled = true;
+						menudata[0].children[0].checked = true; //主页必选
+					}
+					// console.log(menudata);
+
+					doTerrNodeData();
+					//编辑时需要获取并勾选角色已有菜单权限信息
+					if (typeof(initDatas) != "undefined") {
+
+						okUtils.ajax(g_req_url + "RoleMenuAuth/GetAuthUserID", "get", {
+							roleid: initDatas.ROLE_ID,
+							userid: initDatas.USID
+						}, true, true).done(function(response) {
+							var authdata = response.data;
+							if (authdata.length > 0) {
+								// tree.setChecked('authTree', authdata); //勾选指定节点 原有方法有问题，当父级菜单勾选时，所有子菜单都会勾选
+								doTreeNodeCheck(menudata, authdata);
+								// console.log(menudata);
+								tree.reload('authTree', {}); //重载Tree
+							}
+						}).fail(function(error) {
+							console.log(error)
+						});
+					};
+
+					function doTerrNodeData() {
+						if (okUtils.local(g_accr_auth_menus)) menudata[0].children = okUtils.local(
+							g_accr_auth_menus);
+						if (menudata[0].children != null) {
+							// menudata[0].children[0].disabled = true;
+							// menudata[0].children[0].checked = true; //主页必选
+						};
+						if (localStorage.getItem(g_accr_auth_usid) != '5660f012-1351-42f8-955a-e470325e0847') {
+							//不是admin账号情况
+							//menudata[0]
+							menudata[0].children.forEach(function(a, b) {
+								if (a.title == 'System') {
+									menudata[0].children.splice(b, 1)
+								};
+							});
+						};
+
+						console.log('menudata', menudata[0].children);
+						tree.render({
+							elem: "#authTree",
+							id: "authTree",
+							data: menudata,
+							showLine: true,
+							showCheckbox: true
+						});
+
+
+					}
+					//勾选已有菜单权限项
+					function doTreeNodeCheck(mdata, authdata) {
+						mdata.forEach(function(item, index) {
+							if (item.children == null || item.children.length == 0) {
+								if (authdata.contains(item.id)) item.checked = true;
+							} else doTreeNodeCheck(item.children, authdata);
+						});
+					};
+					//下拉框绑定
+					okUtils.ajax(g_req_url + "RoleMenuAuth/GetRoles", "GET", {
+						isall: true,
+						USID: localStorage.getItem(g_accr_auth_usid),
+					}, true, false).done(function(response) {
+
+						//response.data.push({ROLE_NAME: "管理员", ROLE_ID: '0'});
+						for (var i = 0; i < response.data.length; i++) {
+							$("#ROLE_ID").append("<option value=\"" + response.data[i].ROLE_ID + "\">" +
+								response.data[i].ROLE_NAME + "</option>");
+						};
+						var roleid = $('#ROLE_ID').val();
+						//$('#ROLE_ID').val(2);
+						if (localStorage.getItem(g_accr_auth_usid) !=
+							'5660f012-1351-42f8-955a-e470325e0847') {
+							//$("#ROLE_ID").attr('disabled',true); 
+						};
+						//zzy-添加
+						doTerrNodeData();
+						okUtils.ajax(g_req_url + "RoleMenuAuth/GetAuthByRoleID", "get", {
+							roleid: roleid
+						}, true, true).done(function(response) {
+							Print_Log("User Management", "提交", "提交更新用户信息");
+							var authdata = response.data;
+							if (authdata.length > 0) {
+								// tree.setChecked('authTree', authdata); //勾选指定节点 原有方法有问题，当父级菜单勾选时，所有子菜单都会勾选
+								doTreeNodeCheck(menudata, authdata);
+								// console.log(menudata);
+								tree.reload('authTree', {}); //重载Tree
+							}
+						}).fail(function(error) {
+							console.log(error)
+						});
+						//zzy-添加-end
+
+						//绑定客户列表
+						$("#CUSTOMER_NAME").append('<option value="未指定">未指定</option>');
+						okUtils.ajax(g_req_url + "RoleMenuAuth/GetUserProjectName", "get", {
+							USID: document.getElementById("USERID").value
+						}, true, true).done(function(response) {
+							response.PROJECT.forEach(function(a){
+								$("#CUSTOMER_NAME").append('<option value="' + a + '">' + a + '</option>');
+							});
+							if (response.PROJECT_NAME == '') response.PROJECT_NAME = '未指定';
+							$('#CUSTOMER_NAME').val(response.PROJECT_NAME);
+							form.render('select');  
+						}).fail(function(error) {
+							console.log(error)
+						});
+						
+						// form.render('select','filter');  
+					});
+					//添加验证账户不可重复
+					if (typeof(initDatas) == "undefined") {
+						form.verify({
+							LOGIN_NAME: function(value, item) {
+
+								if (value.length < 3 || value.length > 20) return "用户账号的长度必须为3-20位！";
+
+								var errtxt = "";
+								okUtils.ajax(g_req_url + "System/VerifyAccount", "POST", JSON
+									.stringify({
+										LOGIN_NAME: value
+									}), true, false).done(function(response) {
+									if (response.success == "error") {
+										errtxt = "账户名称已存在!";
+									}
+								});
+								if (errtxt != "") {
+									return errtxt;
+								}
+							},
+							phone: [/(^$)|^1\d{10}$/, '请输入正确的手机号'],
+							email: [/(^$)|^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
+								'邮箱格式不正确'
+							],
+						});
+					} else {
+						$("#cz").hide();
+					}
+
+					//绑定表单
+					form.val("filter", initDatas);
+
+					/**
+					 * 数据校验
+					 */
+					form.verify({
+						password: [/^[a-zA-Z0-9.!@#]{6,20}$/, "密码必须6-20位，且只能输入大小写字母、数字以及特殊字符(.!@#)！"],
+
+					});
+					//获取权限菜单树形已选项id集合
+					function getCheckedMenuIds(treedata, auths) {
+						treedata.forEach(function(item, index) {
+							if (item.id != undefined && item.id > 0) auths.push(item.id);
+							if (item.children != null && item.children.length > 0) auths =
+								getCheckedMenuIds(item
+									.children, auths);
+						});
+						return auths;
+					};
+
+					//展开或者折叠角色权限菜单树形结构
+					function changeTreeNodeSpreadState(state) {
+						mdata.forEach(function(item, index) {
+							item.spread = state;
+							if (item.children != null && item.children.length > 0)
+								changeTreeNodeSpreadState(state);
+						});
+					};
+					form.on("submit(add)", function(data) {
+						data.field.USID = localStorage.getItem(g_accr_auth_usid);
+						data.field.USERID = document.getElementById("USERID").value;
+						data.field.ISOK = true;
+						if (data.field.USID == null || data.field.USID.length == 0) {
+							layer.msg("无法获取用户信息，请重新登录！", {
+								icon: 5
+							});
+							return false;
+						}
+						var checkedData = tree.getChecked('authTree'); //获取选中节点的数据
+						data.field.AUTHS = getCheckedMenuIds(checkedData, []);;
+						if (data.field.AUTHS == null || data.field.AUTHS.length == 0) {
+							layer.msg("请选择角色权限信息！", {
+								icon: 5
+							});
+							return false;
+						}
+						// if (!data.field.AUTHS.contains(1)) {
+						// 	layer.msg("角色权限主页是必选项！", {
+						// 		icon: 5
+						// 	});
+						// 	return false;
+						// }
+						data.field.ROLE_STATE = data.field.ROLE_STATE ? 1 : 0;
+
+						if (data.field.STATE != "1") {
+							data.field.STATE = "0"
+						}
+						var req_data = (typeof(initDatas) == "undefined") ? "添加" : "修改"
+						data.field.P_USID = localStorage.getItem(g_accr_auth_usid);
+						if (data.field.IS_CONSOLE == undefined) data.field.IS_CONSOLE = 1;
+						data.field.PROJECT_NAME = $('#CUSTOMER_NAME').val().replace('未指定','');
+						console.log(7777777, data.field);
+						okUtils.ajax(g_req_url + "System/" + (typeof(initDatas) == "undefined" ?
+							"UserAdd" :
+							"UserUpdate"), "post", JSON.stringify(data.field), true, true).done(
+							function(
+								response) {
+								if (response.success == "ok") {
+									Print_Log("User Management", "提交", "搜索编辑用户信息");
+									parent.layer.close(parent.layer.getFrameIndex(window.name));
+									parent.roleMsg(req_data, response.success);
+									parent.haveRefresh = true;
+								} else if (response.success == "warning") {
+
+									document.getElementById("accnumber").value = "";
+									layer.msg('已存在账户，请重新输入！', {
+										icon: 5
+									});
+								} else {
+									parent.roleMsg(req_data, response.success);
+								}
+
+							}).fail(function(error) {
+							console.log(error)
+						});
+						return false;
+					});
+
+				});
+
+			});
+		</script>
+	</body>
+</html>

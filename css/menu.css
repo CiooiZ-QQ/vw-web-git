@@ -1,0 +1,72 @@
+@media screen and (max-width: 1800px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media screen and (max-width: 1680px) {
+  html {
+    font-size: 14px;
+  }
+}
+@media screen and (max-width: 1560px) {
+  html {
+    font-size: 13px;
+  }
+}
+@media screen and (max-width: 1440px) {
+  html {
+    font-size: 12px;
+  }
+  
+}
+@media screen and (max-width: 1320px) {
+  html {
+    font-size: 11px;
+  }
+}
+@media screen and (max-width: 1200px) {
+  html {
+    font-size: 10px;
+  }
+}
+@media screen and (max-width: 1080px) {
+  html {
+    font-size: 9px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  html {
+    font-size: 14px;
+  }
+  .layui-nav .layui-nav-more {right: 10px;}
+}
+@font-face {
+  font-family: VWHeadOffice_Regular;
+  src: url('../lib/font-vw/VWHeadOffice_Regular.ttf');
+}
+body {font-family: VWHeadOffice_Regular;}
+#logo_img_R1 {/* width: 34px; display: none;*/margin-left: 142px;}
+@media screen and (min-width:769px) {
+	.this_bj {background-color: #009688;}
+	#navBar li>a cite,#navBar li>a i {font-size: 18px;    vertical-align: bottom;}
+	#navBar li>a cite {/* margin-left: 8px; */}
+	.layui-layout-admin.ok-left-hide .ok-left, .layui-layout-admin.ok-left-hide .ok-left .okadmin-logo {left: -170px;}
+	.layui-layout-admin.ok-left-hide .content-body, .layui-layout-admin.ok-left-hide .layui-footer {left: 50px;}
+	.layui-layout-admin.ok-left-hide .layui-header .layui-layout-left {left: 30px;}
+	.layui-layout-admin.ok-left-hide #logo_img {opacity: 0;}
+	.layui-layout-admin.ok-left-hide #logo_img_R1 {margin-right: -26px;display: inline-block;    cursor: pointer;}
+	.layui-layout-admin.ok-left-hide .layui-nav .layui-nav-item a i {left: 184px;}
+	.layui-layout-admin.ok-left-hide #navBar>li>a>cite,.layui-layout-admin.ok-left-hide .layui-nav-tree .layui-nav-more {display: none;}
+	.layui-layout-admin.ok-left-hide .layui-nav-itemed>.layui-nav-child {display: none !important;}
+
+	.layui-layout-admin.ok-left-hide .layui-side,.ok-left-hide .layui-side-scroll   {    overflow-x: unset;}
+	.layui-layout-admin.ok-left-hide .layui-nav-itemed>a{background-color: #009688;}
+	.layui-layout-admin.ok-left-hide .layui-side-menu .layui-side-scroll {width: 220px !important;}
+	.layui-layout-admin.ok-left-hide #navBar>li>a:hover {background-color: #009688;}
+	.layui-layout-admin.ok-left-hide #navBar>li:hover .layui-nav-child {display: unset !important; left: 220px;    position: absolute; background-color:#20222A !important;}
+	
+	
+}
+

@@ -1,0 +1,20 @@
+
+#select-year { margin-right: 5px; z-index: 2; }
+#select-year span { position: relative; display: inline-block; margin-bottom: 1vh; padding: 0 15px; height: 4vh; line-height: 2; min-height: 36px; font-size: 1.1rem; margin-right: 6px; cursor: pointer; }
+#select-year span::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: -1; transform: skewX(-25deg); background-color: #1C273B; border: 1px solid #50595E; }
+#select-year span:hover::before { border: 1px solid #666666; box-shadow: 0 0 12px 0 rgba(200,200,200,0.6); }
+#select-year span[class='active']::before { background-color: #1E90FF; border: 1px solid #1E90FF; }
+#select-year2 { display: none; }
+
+.body-set1 .content-card { height: 80.2vh; }
+
+
+
+@media screen and (max-width: 992px) {
+	#select-year { display: none; }
+	#select-year2 { display: inline-block; }
+}
+@media screen and (max-width: 666px) {
+	.body-set1 .filter-card select { width: calc(50% - 1vh + 2px); }
+	.body-set1 .filter-card .selectdown:nth-child(even) select { margin-right: 0; }
+}
